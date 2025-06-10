@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import './App.css'
+
 import Header from './components/Header';
-import Footer from './components/Footer';
+import Footer from './components/footer';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Carrinho from './pages/Carrinho';
 import Gamer from './pages/Gamer';
-
-import "../src/index.css"
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
         </div>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

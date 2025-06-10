@@ -6,7 +6,7 @@ function Login() {
 
       <h2>Usuário</h2>
       <input type="text" name="Seu Email" id="email"/>
-      <h2>E-mail</h2>
+      <h2 className="font-bold" >E-mail</h2>
       <input type="text" name="Sua Senha" id="password" />
     </div>
   );
