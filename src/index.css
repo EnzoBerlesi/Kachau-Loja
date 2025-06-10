@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #121212;
+  color: #f1f1f1;
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.header {
+  background-color: #1f1f1f;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  color: #00c3ff;
+}
+
+.header .links a {
+  color: #f1f1f1;
+  margin-left: 1.5rem;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.header .links a:hover {
+  color: #00c3ff;
+}
+
+/* Conteúdo */
+.content {
+  padding: 2rem;
+}
+
+.page h2 {
+  color: #00c3ff;
+  margin-bottom: 1rem;
+}
+
+.page p {
+  font-size: 1.1rem;
+}
