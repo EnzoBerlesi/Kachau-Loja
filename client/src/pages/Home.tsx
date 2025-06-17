@@ -12,7 +12,7 @@ function Carousel1() {
   });
 
   return (
-    <div ref={sliderRef} className="keen-slider w-full h-[300px]">
+    <div ref={sliderRef} className="keen-slider w-15 h-[300px]">
       <div className="keen-slider__slide">
         <img src="/assets/promo1.png" alt="Promoção 1" className="w-full h-full object-cover object-center" />
       </div>
@@ -38,17 +38,17 @@ function Carousel1() {
 // COMPONENTE PRINCIPAL (HOME)
 function Home() {
   return (
-    <div className="w-full bg-gray-100 pt-32">
+    <div className="w-full bg-gray-900/80 pt-12">
       {/* Carrossel no topo */}
       <Carousel />
 
       {/* Seção de Promoções */}
-      <div className="p-4 bg-gray-100">
+      <div className="p-4 bg-gray-900/60">
         <h2 className="text-2xl font-bold text-red-600 mb-4">🔥 PROMOÇÕES</h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Produto 1 */}
-          <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-all">
+          <div className=" border rounded-lg overflow-hidden hover:shadow-lg transition-all">
             <img 
               src="/assets/produtos/promo1.jpg" 
               alt="Produto em promoção"
@@ -68,7 +68,7 @@ function Home() {
       </div>
 
       {/* Seção de Novos Produtos */}
-      <div className="p-4 mt-6 bg-gray-100">
+      <div className="p-4 mt-6 purple">
         <h2 className="text-2xl font-bold text-blue-600 mb-4">🆕 NOVIDADES</h2>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
