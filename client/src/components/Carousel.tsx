@@ -38,47 +38,37 @@ const Carousel = () => {
   }, [instanceRef]);
 
   return (
-    <div className="relative">
-      {/* Overlay de loading (opcional) */}
-      {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-          <p>Carregando...</p>
-        </div>
-      )}
+    <div className="relative w-full max-w-[900px] mx-auto h-[300px] md:h-[400px]"> {/* Container principal com altura fixa */}
+  {/* Slider (cobre 100% do container pai) */}
+  <div
+    ref={sliderRef}
+    className="keen-slider w-full h-full rounded-lg"
+  >
+    {[1, 2, 3, 4, 5, 6].map((num) => (
+<div key={num} className="keen-slider__slide !min-w-full flex items-center justify-center rounded-lg">
+  <img
+    src={`/assets/promo${num}.png`}
+    alt={`Promoção ${num}`}
+    className="max-w-[90%] max-h-[90%] object-contain mx-auto" // Imagem nunca ultrapassa 90% do slide
+  />
+</div>
+    ))}
+  </div>
 
-      {/* Container do Slider */}
-      <div
-        ref={sliderRef}
-        className={`keen-slider w-full h-[300px] md:h-[400px] rounded-lg overflow-hidden ${
-          loaded ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-300`}
-      >
-        {[1, 2, 3, 4, 5, 6].map((num) => (
-          <div key={num} className="keen-slider__slide">
-            <img
-              src={`/assets/promo${num}.png`}
-              alt={`Promoção ${num}`}
-              className="w-full h-full object-cover scale-100"
-              loading="eager"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Botões de navegação */}
-      <button
-        onClick={() => instanceRef.current?.prev()}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20"
-      >
-        ◀
-      </button>
-      <button
-        onClick={() => instanceRef.current?.next()}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20"
-      >
-        ▶
-      </button>
-    </div>
+  {/* Botões (agora ficam POR CIMA da imagem) */}
+  <button
+    onClick={() => instanceRef.current?.prev()}
+    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20 hover:bg-black/80"
+  >
+    ◀
+  </button>
+  <button
+    onClick={() => instanceRef.current?.next()}
+    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20 hover:bg-black/80"
+  >
+    ▶
+  </button>
+</div>
   );
 };
 
