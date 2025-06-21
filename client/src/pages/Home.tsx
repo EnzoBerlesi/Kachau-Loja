@@ -126,6 +126,43 @@ function Home() {
                 <p className="text-green-400 font-bold mt-1">R$ 349</p>
               </div>
             </div>
+
+            <div className="bg-gray-900 border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+              <img
+                src="/assets/produtos/novo1.jpg"
+                alt="Novo produto"
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-3">
+                <h3 className="font-semibold text-white">Teclado Mecânico</h3>
+                <p className="text-green-400 font-bold mt-1">R$ 349</p>
+              </div>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+              <img
+                src="/assets/produtos/novo1.jpg"
+                alt="Novo produto"
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-3">
+                <h3 className="font-semibold text-white">Teclado Mecânico</h3>
+                <p className="text-green-400 font-bold mt-1">R$ 349</p>
+              </div>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+              <img
+                src="/assets/produtos/novo1.jpg"
+                alt="Novo produto"
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-3">
+                <h3 className="font-semibold text-white">Teclado Mecânico</h3>
+                <p className="text-green-400 font-bold mt-1">R$ 349</p>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
