@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import './App.css'
+import './App.css';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Carrinho from './pages/Carrinho';
 import Gamer from './pages/Gamer';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import PrivateRoute from './components/PrivateRoutes';
 
 function App() {
   return (
@@ -15,13 +18,19 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/carrinho" element={<Carrinho />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/gamer" element={<Gamer />} />
+
+            {/* Rotas protegidas */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/carrinho" element={<Carrinho />} />
+            </Route>
           </Routes>
         </div>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

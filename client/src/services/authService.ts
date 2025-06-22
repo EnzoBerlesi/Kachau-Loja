@@ -1,3 +1,6 @@
+import axios from 'axios';
+const API_URL = 'http://localhost:3000/auth';
+
 export async function login(email: string, password: string) {
   const response = await fetch('http://localhost:3000/auth/login', {
     method: 'POST',
@@ -11,4 +14,15 @@ export async function login(email: string, password: string) {
   }
 
   return response.json(); 
+}
+
+export async function register(name: string, email: string, password: string, role: 'CUSTOMER' | 'ADMIN') {
+  const response = await axios.post(`${API_URL}/register`, {
+    name,
+    email,
+    password,
+    role,
+  });
+
+  return response.data;
 }
