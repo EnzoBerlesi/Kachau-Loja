@@ -1,37 +1,6 @@
-import React from "react";
 import "keen-slider/keen-slider.min.css";
-import { useKeenSlider } from "keen-slider/react";
 import Carousel from '../components/Carousel';
 
-
-// COMPONENTE DO CARROSSEL
-function Carousel1() {
-  const [sliderRef] = useKeenSlider({
-    loop: true,
-    slides: { perView: 1 },
-  });
-
-  return (
-    <div
-      ref={sliderRef}
-      className="keen-slider w-1/3 h-[200px] mx-auto overflow-hidden"
-    >
-      {[1, 2, 3, 4, 5, 6].map((num) => (
-        <div
-          key={num}
-          className="keen-slider__slide flex items-center justify-center !min-w-0"
-        >
-          <img
-            src={`/assets/promo${num}.png`}
-            alt={`Promoção ${num}`}
-            className="max-w-full max-h-full object-contain"
-          />
-        </div>
-      ))}
-    </div>
-  );
-
-}
 
 // COMPONENTE PRINCIPAL (HOME)
 function Home() {
