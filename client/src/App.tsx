@@ -8,6 +8,7 @@ import Carrinho from './pages/Carrinho';
 import Gamer from './pages/Gamer';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoutes';
 
 function App() {
@@ -15,11 +16,11 @@ function App() {
     <Router>
       <div className="app">
         <div className="content">
-          <Routes>
-            <Route path="/" element={<Home />} />
+          <Routes>            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/gamer" element={<Gamer />} />
+            <Route path="/admin" element={<Admin />} />
 
             {/* Rotas protegidas */}
             <Route element={<PrivateRoute />}>

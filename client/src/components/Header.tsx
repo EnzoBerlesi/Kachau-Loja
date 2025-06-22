@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CircleUserRound, House, ShoppingCart, LogOut } from 'lucide-react';
+import { CircleUserRound, House, ShoppingCart, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 function Header() {
@@ -27,9 +27,11 @@ function Header() {
                 </Link>
                 <Link to="/" title="Home" className="hover:text-pink-400 transition">
                   <House />
-                </Link>
-                <Link to="/carrinho" title="Carrinho" className="hover:text-pink-400 transition">
+                </Link>                <Link to="/carrinho" title="Carrinho" className="hover:text-pink-400 transition">
                   <ShoppingCart />
+                </Link>
+                <Link to="/admin" title="Administração" className="hover:text-pink-400 transition">
+                  <Settings />
                 </Link>
                 <button
                   onClick={logout}
