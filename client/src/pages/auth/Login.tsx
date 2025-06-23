@@ -9,8 +9,8 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { login } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { login } from "../../services/auth/authService";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {

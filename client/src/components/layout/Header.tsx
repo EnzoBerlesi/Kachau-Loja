@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CircleUserRound, House, ShoppingCart, LogOut, Settings } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 function Header() {
   const { token, logout } = useAuth();

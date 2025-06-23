@@ -16,4 +16,17 @@ export class UsersService {
       },
     });
   }
+
+   async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  }
+  
 }

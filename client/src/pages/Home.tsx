@@ -1,8 +1,8 @@
 import "keen-slider/keen-slider.min.css";
 import { Link } from 'react-router-dom';
-import Carousel from "../components/Carousel";
-import Header from "../components/Header";
-import Footer from "../components/footer";
+import Carousel from "../components/ui/Carousel";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 
 // COMPONENTE PRINCIPAL (HOME)
 function Home() {

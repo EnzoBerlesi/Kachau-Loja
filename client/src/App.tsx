@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Carrinho from './pages/Carrinho';
-import Gamer from './pages/Gamer';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
+import Login from './pages/auth/Login';
+import Carrinho from './pages/shop/Carrinho';
+import Gamer from './pages/shop/Gamer';
+import Register from './pages/auth/Register';
+import Profile from './pages/user/Profile';
+import Admin from './pages/admin/Admin';
 import Product from './pages/Product';
-import PrivateRoute from './components/PrivateRoutes';
-import AdminRoute from './components/AdminRoutes';
+import { PrivateRoutes as PrivateRoute } from './components/ui';
+import { AdminRoutes as AdminRoute } from './components/admin';
 
 function App() {
   return (

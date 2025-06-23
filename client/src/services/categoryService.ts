@@ -1,4 +1,4 @@
-import api from './api';
+import api from '../services/api/api';
 
 export interface Category {
   id: string;

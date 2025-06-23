@@ -1,6 +1,5 @@
 import  { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/footer";
+import { Header, Footer } from "../../components/layout";
 
 function Carrinho() {
   const [carrinho, setCarrinho] = useState([

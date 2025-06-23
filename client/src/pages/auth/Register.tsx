@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { register } from "../services/authService";
+import { register } from "../../services/auth/authService";
 import {
   Mail,
   Lock,
