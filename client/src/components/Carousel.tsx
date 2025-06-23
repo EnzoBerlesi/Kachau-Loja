@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; // Adicione useState aqui
+import  { useEffect, useState } from "react"; // Adicione useState aqui
 import { useKeenSlider } from "keen-slider/react";
 import type { KeenSliderInstance } from "keen-slider"; // Importação type-only
 import "keen-slider/keen-slider.min.css";

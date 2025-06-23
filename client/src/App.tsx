@@ -10,22 +10,27 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoutes';
+import AdminRoute from './components/AdminRoutes';
 
 function App() {
   return (
     <Router>
       <div className="app">
         <div className="content">
-          <Routes>            <Route path="/" element={<Home />} />
+          <Routes>            
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/gamer" element={<Gamer />} />
-            <Route path="/admin" element={<Admin />} />
 
             {/* Rotas protegidas */}
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<Profile />} />
               <Route path="/carrinho" element={<Carrinho />} />
+            </Route>
+
+            <Route element={<AdminRoute />} >
+              <Route path="/admin" element={<Admin />} />
             </Route>
           </Routes>
         </div>
