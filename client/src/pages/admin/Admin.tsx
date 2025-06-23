@@ -122,6 +122,20 @@ const Admin = () => {
     }
   };
 
+  const handleAddProduct = () => {
+    // Recarrega os produtos após adicionar um novo
+    if (activeSection === "products") {
+      loadData();
+    }
+  };
+
+  const handleAddCategory = () => {
+    // Recarrega as categorias após adicionar uma nova
+    if (activeSection === "categories") {
+      loadData();
+    }
+  };
+
   const renderSection = () => {
     switch (activeSection) {
       case "products":
@@ -131,6 +145,7 @@ const Admin = () => {
             loading={loading}
             error={error}
             onDeleteProduct={handleDeleteProduct}
+            onAddProduct={handleAddProduct}
           />
         );
       case "categories":
@@ -140,6 +155,7 @@ const Admin = () => {
             loading={loading}
             error={error}
             onDeleteCategory={handleDeleteCategory}
+            onAddCategory={handleAddCategory} 
           />
         );
       case "orders":
@@ -167,6 +183,7 @@ const Admin = () => {
             loading={loading}
             error={error}
             onDeleteProduct={handleDeleteProduct}
+            onAddProduct={handleAddProduct}
           />
         );
     }

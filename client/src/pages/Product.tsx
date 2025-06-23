@@ -57,9 +57,7 @@ const Product = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [loading, setLoading] = useState(true);
 
-  // Mock data - em produção, isso viria de uma API
   useEffect(() => {
-    // Simular carregamento de dados
     setTimeout(() => {
       setProduct({
         id: id || '1',
@@ -120,15 +118,11 @@ const Product = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    // Lógica para adicionar ao carrinho
-    console.log(`Adicionando ${quantity} unidades do produto ${product?.id} ao carrinho`);
-    // Criar função pra adicionar no carrinho
+    return ""
   };
 
   const handleBuyNow = () => {
-    // Lógica para comprar agora
     console.log(`Comprando ${quantity} unidades do produto ${product?.id}`);
-    // Redirecionaria para o checkout
     navigate('/checkout');
   };
 
