@@ -9,6 +9,7 @@ import Gamer from './pages/Gamer';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
+import Product from './pages/Product';
 import PrivateRoute from './components/PrivateRoutes';
 import AdminRoute from './components/AdminRoutes';
 
@@ -16,12 +17,12 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <div className="content">
-          <Routes>            
+        <div className="content">          <Routes>            
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/gamer" element={<Gamer />} />
+            <Route path="/product/:id" element={<Product />} />
 
             {/* Rotas protegidas */}
             <Route element={<PrivateRoute />}>

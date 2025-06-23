@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  Package, 
-  Truck, 
-  Users, 
+import {
+  Package,
+  Truck,
+  Users,
   Settings,
   Plus,
   Edit,
@@ -21,13 +21,13 @@ import { userService, type User } from '../services/userService';
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState('products');
-  
+
   // Estados para dados
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  
+
   // Estados de loading
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +35,7 @@ const Admin = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       switch (activeSection) {
         case 'products': {
@@ -75,7 +75,7 @@ const Admin = () => {
 
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Tem certeza que deseja deletar este produto?')) return;
-    
+
     try {
       await productService.deleteProduct(id);
       setProducts(products.filter(p => p.id !== id));
@@ -87,7 +87,7 @@ const Admin = () => {
 
   const handleDeleteCategory = async (id: string) => {
     if (!confirm('Tem certeza que deseja deletar esta categoria?')) return;
-    
+
     try {
       await categoryService.deleteCategory(id);
       setCategories(categories.filter(c => c.id !== id));
@@ -99,7 +99,7 @@ const Admin = () => {
 
   const handleDeleteUser = async (id: string) => {
     if (!confirm('Tem certeza que deseja deletar este usuário?')) return;
-    
+
     try {
       await userService.deleteUser(id);
       setUsers(users.filter(u => u.id !== id));
@@ -119,12 +119,12 @@ const Admin = () => {
     }
   };
 
-  const AdminCard = ({ 
-    icon: Icon, 
-    title, 
-    description, 
-    sectionKey, 
-    count 
+  const AdminCard = ({
+    icon: Icon,
+    title,
+    description,
+    sectionKey,
+    count
   }: {
     icon: React.ComponentType<{ size?: number }>;
     title: string;
@@ -132,21 +132,19 @@ const Admin = () => {
     sectionKey: string;
     count?: number;
   }) => (
-    <div      className={`bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl border ${
-        activeSection === sectionKey 
-          ? 'border-purple-400 bg-gradient-to-br from-purple-400/15 to-purple-400/10' 
-          : 'border-slate-700/50 hover:border-purple-400/50'
+    <div className={`bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl border ${activeSection === sectionKey
+        ? 'border-purple-400 bg-gradient-to-br from-purple-400/15 to-purple-400/10'
+        : 'border-slate-700/50 hover:border-purple-400/50'
       } transform hover:scale-[1.02]`}
       onClick={() => setActiveSection(sectionKey)}
     >
       <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-4">          <div className={`p-3 rounded-lg transition-all duration-300 ${
-            activeSection === sectionKey 
-              ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white' 
-              : 'bg-slate-700/50 text-purple-400 hover:bg-purple-400/20'
+        <div className="flex items-center space-x-4">          <div className={`p-3 rounded-lg transition-all duration-300 ${activeSection === sectionKey
+            ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white'
+            : 'bg-slate-700/50 text-purple-400 hover:bg-purple-400/20'
           }`}>
-            <Icon size={24} />
-          </div>
+          <Icon size={24} />
+        </div>
           <div>
             <h3 className="text-lg font-semibold text-white">{title}</h3>
             <p className="text-sm text-slate-400">{description}</p>
@@ -163,25 +161,25 @@ const Admin = () => {
 
   const ProductsSection = () => (
     <div className="space-y-6">      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Gerenciador de Produtos</h2>
-        <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
-          <Plus size={20} />
-          <span>Adicionar Produto</span>
-        </button>
-      </div>
-      
+      <h2 className="text-2xl font-bold text-white">Gerenciador de Produtos</h2>
+      <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
+        <Plus size={20} />
+        <span>Adicionar Produto</span>
+      </button>
+    </div>
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      
+
       <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
         <div className="flex space-x-4 mb-6">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />            <input 
-              type="text" 
-              placeholder="Buscar produtos..." 
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />            <input
+              type="text"
+              placeholder="Buscar produtos..."
               className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
             />
           </div>
@@ -221,7 +219,7 @@ const Admin = () => {
                         <button className="text-purple-400 hover:text-purple-300 transition-colors">
                           <Edit size={18} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDeleteProduct(product.id)}
                           className="text-red-400 hover:text-red-300 transition-colors"
                         >
@@ -248,19 +246,19 @@ const Admin = () => {
 
   const CategoriesSection = () => (
     <div className="space-y-6">      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Gerenciamento de Categorias</h2>
-        <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
-          <Plus size={20} />
-          <span>Adicionar Categoria</span>
-        </button>
-      </div>
-      
+      <h2 className="text-2xl font-bold text-white">Gerenciamento de Categorias</h2>
+      <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
+        <Plus size={20} />
+        <span>Adicionar Categoria</span>
+      </button>
+    </div>
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           <div className="col-span-full flex justify-center items-center py-8">
@@ -281,7 +279,7 @@ const Admin = () => {
                     <button className="text-purple-400 hover:text-purple-300 transition-colors">
                       <Edit size={18} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleDeleteCategory(category.id)}
                       className="text-red-400 hover:text-red-300 transition-colors"
                     >
@@ -312,13 +310,13 @@ const Admin = () => {
           <span>Exportar Relatório</span>
         </button>
       </div>
-      
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      
+
       <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
         {loading ? (
           <div className="flex justify-center items-center py-8">
@@ -344,7 +342,7 @@ const Admin = () => {
                     <td className="p-4 text-slate-300">{order.user?.name || 'N/A'}</td>
                     <td className="p-4 text-white font-semibold">R$ {order.total.toFixed(2)}</td>
                     <td className="p-4">
-                      <select 
+                      <select
                         value={order.status}
                         onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value as Order['status'])}
                         className="bg-slate-700/50 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -400,28 +398,27 @@ const Admin = () => {
           { label: 'Novos (30 dias)', value: '0', color: 'blue' },
         ].map((stat, index) => (
           <div key={index} className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-slate-700/50 shadow-2xl">
-            <h3 className="text-sm font-medium text-slate-400 mb-1">{stat.label}</h3>            <p className={`text-2xl font-bold ${
-              stat.color === 'purple' ? 'text-purple-400' :
-              stat.color === 'green' ? 'text-green-400' :
-              'text-blue-400'
-            }`}>{stat.value}</p>
+            <h3 className="text-sm font-medium text-slate-400 mb-1">{stat.label}</h3>            <p className={`text-2xl font-bold ${stat.color === 'purple' ? 'text-purple-400' :
+                stat.color === 'green' ? 'text-green-400' :
+                  'text-blue-400'
+              }`}>{stat.value}</p>
           </div>
         ))}
       </div>
-      
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      
+
       <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
         <div className="flex space-x-4 mb-6">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />            <input 
-              type="text" 
-              placeholder="Buscar usuários..." 
-              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />            <input
+              type="text"
+              placeholder="Buscar usuários..."
+              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200" />
           </div>
           <button className="bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600 hover:border-purple-400 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200">
             <Filter size={20} />
@@ -451,9 +448,8 @@ const Admin = () => {
                     <td className="p-4 font-medium text-white">{user.name}</td>
                     <td className="p-4 text-slate-300">{user.email}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.role === 'ADMIN' ? 'bg-purple-400/20 text-purple-400 border border-purple-400/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                      }`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN' ? 'bg-purple-400/20 text-purple-400 border border-purple-400/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                        }`}>
                         {user.role === 'ADMIN' ? 'Administrador' : 'Cliente'}
                       </span>
                     </td>
@@ -465,7 +461,7 @@ const Admin = () => {
                         <button className="text-purple-400 hover:text-purple-300 transition-colors">
                           <Edit size={18} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDeleteUser(user.id)}
                           className="text-red-400 hover:text-red-300 transition-colors"
                         >
@@ -521,7 +517,8 @@ const Admin = () => {
             <div className="flex justify-between items-center py-6">
               <div>
                 <div className="flex items-center space-x-2 mb-2">
-                  <Sparkles className="w-6 h-6 text-purple-400" />                  <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-300 bg-clip-text text-transparent">
+                  <Sparkles className="w-6 h-6 text-purple-400" />
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-300 bg-clip-text text-transparent">
                     Painel Administrativo
                   </h1>
                 </div>
