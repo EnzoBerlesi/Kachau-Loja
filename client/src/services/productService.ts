@@ -36,6 +36,12 @@ export const productService = {
     const response = await api.get(`/products/${id}`);
     return response.data;
   },
+  
+  // GET /products?categoryId=:id - Buscar produtos por categoria
+  async getProductsByCategory(categoryId: string): Promise<Product[]> {
+    const response = await api.get(`/products?categoryId=${categoryId}`);
+    return response.data;
+  },
 
   // POST /products - Criar produto (ADMIN)
   async createProduct(data: CreateProductData): Promise<Product> {
