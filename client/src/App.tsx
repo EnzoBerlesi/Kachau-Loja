@@ -6,6 +6,10 @@ import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Carrinho from './pages/shop/Carrinho';
 import Gamer from './pages/shop/Gamer';
+import Escritorio from './pages/shop/Escritorio';
+import Notebooks from './pages/shop/notebooks';
+import Hardware from './pages/shop/hardware';
+import Perifericos from './pages/shop/perifericos';
 import Register from './pages/auth/Register';
 import Profile from './pages/user/Profile';
 import Admin from './pages/admin/Admin';
@@ -22,6 +26,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/gamer" element={<Gamer />} />
+            <Route path='/escritorio' element={<Escritorio/>}/>
+            <Route path="/notebooks" element={<Notebooks/>} />
+            <Route path='/hardware' element={<Hardware/>} />
+            <Route path='/perifericos' element={<Perifericos/>}/>
             <Route path="/product/:id" element={<Product />} />
 
             {/* Rotas protegidas */}

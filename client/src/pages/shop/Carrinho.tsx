@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Header, Footer } from "../../components/layout";
 
 function Carrinho() {
@@ -21,13 +21,24 @@ function Carrinho() {
 
   const [cupom, setCupom] = useState("");
   const [desconto, setDesconto] = useState(0);
+  const [cep, setCep] = useState("");
+  const [frete, setFrete] = useState<number | null>(null);
 
   const aplicarCupom = () => {
     if (cupom.toLowerCase() === "kachau10") {
-      setDesconto(0.1); // 10%
+      setDesconto(0.1);
     } else {
       alert("Cupom inválido.");
       setDesconto(0);
+    }
+  };
+
+  const calcularFrete = () => {
+    if (cep.length === 8) {
+      setFrete(29.9); // valor fictício fixo
+    } else {
+      alert("CEP inválido. Digite 8 números.");
+      setFrete(null);
     }
   };
 
@@ -47,25 +58,25 @@ function Carrinho() {
     (acc, item) => acc + item.preco * item.quantidade,
     0
   );
-  const total = subtotal - subtotal * desconto;
+  const total = subtotal * (1 - desconto) + (frete || 0);
 
   return (
     <>
       <Header />
       <div className="min-h-screen bg-gray-900 text-white p-6 font-sans">
-        <h1 className="text-3xl font-bold text-purple-400 mb-6">
+        <h1 className="text-3xl font-bold text-purple-400 mb-6 text-center mt-8">
           Seu Carrinho
         </h1>
 
         {carrinho.length === 0 ? (
-          <p className="text-gray-400">Seu carrinho está vazio.</p>
+          <p className="text-gray-400 text-center">Seu carrinho está vazio.</p>
         ) : (
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl mx-auto animate-fadeIn">
             <ul>
               {carrinho.map((item) => (
                 <li
                   key={item.id}
-                  className="flex items-center justify-between border-b border-gray-700 py-4"
+                  className="flex items-center justify-between border-b border-gray-700 py-4 mb-4 transition-all duration-300 hover:bg-gray-700/20 rounded"
                 >
                   <div className="flex items-center gap-4">
                     <img
@@ -108,7 +119,7 @@ function Carrinho() {
               ))}
             </ul>
 
-            {/* Cupom */}
+            {/* Campo de Cupom */}
             <div className="mt-6 flex flex-col sm:flex-row gap-4">
               <input
                 type="text"
@@ -119,9 +130,26 @@ function Carrinho() {
               />
               <button
                 onClick={aplicarCupom}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition"
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition-all duration-200 hover:scale-105"
               >
                 Aplicar Cupom
+              </button>
+            </div>
+
+            {/* Campo de Frete */}
+            <div className="mt-4 flex flex-col sm:flex-row gap-4">
+              <input
+                type="text"
+                placeholder="Digite seu CEP"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+                className="flex-1 p-2 bg-gray-700 border border-gray-600 rounded text-white"
+              />
+              <button
+                onClick={calcularFrete}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition-all duration-200 hover:scale-105"
+              >
+                Calcular Frete
               </button>
             </div>
 
@@ -135,18 +163,21 @@ function Carrinho() {
                   Desconto: -{(desconto * 100).toFixed(0)}%
                 </p>
               )}
+              {frete && (
+                <p className="text-blue-400">Frete: R$ {frete.toFixed(2)}</p>
+              )}
               <p className="font-bold text-purple-400 text-xl">
                 Total: R$ {total.toFixed(2)}
               </p>
             </div>
 
-            <button className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition">
+            <button className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition-all duration-300 hover:scale-105">
               Finalizar Compra
             </button>
           </div>
         )}
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }
