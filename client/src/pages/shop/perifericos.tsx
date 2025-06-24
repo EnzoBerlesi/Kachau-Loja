@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Headphones, Keyboard, Mouse, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
 
 interface Periferico {
@@ -59,6 +60,8 @@ const mockPerifericos: Periferico[] = [
 ];
 
 export default function Perifericos() {
+  const navigate = useNavigate();
+  
   // Estados dos filtros (IGUAL NOTEBOOKS, mas com tipos de periféricos)
   const [showFilters, setShowFilters] = useState(false);
 
@@ -70,6 +73,11 @@ export default function Perifericos() {
     conexao: 'Todos' as 'Todos' | 'USB' | 'Bluetooth',
     busca: ''
   });
+
+  // Função para redirecionar para página do produto
+  const handleProductClick = (id: number) => {
+    navigate(`/product/${id}`);
+  };
 
   // Filtros avançados
   const perifericosFiltrados = mockPerifericos.filter(item => {
@@ -150,10 +158,9 @@ export default function Perifericos() {
 
               {/* Tipo */}
               <div>
-                <label className="block mb-3 text-red-400">Tipo</label>
-                <select
+                <label className="block mb-3 text-red-400">Tipo</label>                <select
                   value={filtros.tipo}
-                  onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value as any })}
+                  onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value as 'Todos' | 'Teclado' | 'Mouse' | 'Headset' })}
                   className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white"
                 >
                   <option value="Todos">Todos</option>
@@ -165,10 +172,9 @@ export default function Perifericos() {
 
               {/* Conexão */}
               <div>
-                <label className="block mb-3 text-red-400">Conexão</label>
-                <select
+                <label className="block mb-3 text-red-400">Conexão</label>                <select
                   value={filtros.conexao}
-                  onChange={(e) => setFiltros({ ...filtros, conexao: e.target.value as any })}
+                  onChange={(e) => setFiltros({ ...filtros, conexao: e.target.value as 'Todos' | 'USB' | 'Bluetooth' })}
                   className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white"
                 >
                   <option value="Todos">Todos</option>
@@ -194,10 +200,13 @@ export default function Perifericos() {
         )}
 
         {/* Listagem */}
-        <main className="max-w-7xl mx-auto px-4 pb-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <main className="max-w-7xl mx-auto px-4 pb-12">          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {perifericosFiltrados.map(item => (
-              <div key={item.id} className="bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-red-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10">
+              <div 
+                key={item.id} 
+                className="bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-red-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10 cursor-pointer"
+                onClick={() => handleProductClick(item.id)}
+              >
                 {/* Badge de tipo */}
                 <div className="absolute top-3 left-3">
                   {iconesPorTipo[item.tipo]}
@@ -239,9 +248,13 @@ export default function Perifericos() {
                         <span>Grátis</span>
                       </span>
                     )}
-                  </div>
-
-                  <button className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-1 transition-colors">
+                  </div>                  <button 
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-1 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProductClick(item.id);
+                    }}
+                  >
                     <ShoppingCart size={16} />
                     Add ao Carrinho
                   </button>

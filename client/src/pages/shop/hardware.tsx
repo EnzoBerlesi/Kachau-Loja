@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // Importe apenas os ícones disponíveis
 // Importe apenas os ícones disponíveis
 import { 
@@ -72,10 +73,17 @@ const mockHardware: Hardware[] = [
 ];
 
 export default function HardwarePage() {
+  const navigate = useNavigate();
+  
   // Estados dos filtros
   const [precoRange, setPrecoRange] = useState([0, 15000]);
   const [tipoSelecionado, setTipoSelecionado] = useState<string>('Todos');
   const [termoBusca, setTermoBusca] = useState('');
+
+  // Função para redirecionar para a página de produto
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
 
   // Ícones para cada tipo
  const iconesPorTipo = {
@@ -146,10 +154,13 @@ export default function HardwarePage() {
       </div>
 
       {/* Listagem */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {hardwareFiltrado.map(item => (
-            <div key={item.id} className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-blue-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+            <div 
+              key={item.id} 
+              onClick={() => handleProductClick(item.id)}
+              className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-blue-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 cursor-pointer"
+            >
               {/* Ícone do tipo */}
               <div className="absolute top-3 left-3">
                 {iconesPorTipo[item.tipo]}
@@ -195,7 +206,13 @@ export default function HardwarePage() {
                   )}
                 </div>
 
-                <button className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProductClick(item.id);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                >
                   <ShoppingCart size={18} />
                   Adicionar ao carrinho
                 </button>

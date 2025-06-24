@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Laptop, BatteryFull, Lightbulb, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
 import Header from '../../components/layout/Header';
 
@@ -41,6 +42,8 @@ const mockEscritorio: ProdutoEscritorio[] = [
 ];
 
 export default function Escritorio() {
+  const navigate = useNavigate();
+  
   // Estados dos filtros (IGUAL NOTEBOOKS)
   const [filtros, setFiltros] = useState({
     precoMax: 10000,
@@ -50,6 +53,11 @@ export default function Escritorio() {
     busca: ''
   });
   const [showFilters, setShowFilters] = useState(false);
+
+  // Função para redirecionar para a página de produto
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
 
   // Filtros avançados
   const produtosFiltrados = mockEscritorio.filter(produto => {
@@ -167,10 +175,13 @@ export default function Escritorio() {
       )}
 
       {/* Listagem de produtos */}
-      <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="max-w-7xl mx-auto px-4 pb-12">        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {produtosFiltrados.map(produto => (
-            <div key={produto.id} className="bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-blue-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+            <div 
+              key={produto.id} 
+              onClick={() => handleProductClick(produto.id)}
+              className="bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-blue-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 cursor-pointer"
+            >
               {/* Imagem */}
               <div className="relative h-48 bg-gray-900/30">
                 <img
@@ -220,7 +231,13 @@ export default function Escritorio() {
                       </p>
                     )}
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-1 transition-colors">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProductClick(produto.id);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-1 transition-colors"
+                  >
                     <ShoppingCart size={16} />
                     <span className="hidden sm:inline">Comprar</span>
                   </button>

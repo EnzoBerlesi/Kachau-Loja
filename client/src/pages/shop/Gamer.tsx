@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Gamepad2, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
 import Header from "../../components/layout/Header";
 
@@ -75,11 +76,18 @@ const mockProdutosGamer: Product[] = [
 ];
 
 export default function Gamer() {
+  const navigate = useNavigate();
+  
   // Estados dos filtros
   const [precoRange, setPrecoRange] = useState([0, 20000]);
   const [freteGratis, setFreteGratis] = useState(false);
   const [avaliacaoMinima, setAvaliacaoMinima] = useState(0);
   const [termoBusca, setTermoBusca] = useState('');
+
+  // Função para redirecionar para a página de produto
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
 
   // Filtros
   const produtosFiltrados = mockProdutosGamer.filter(produto => {
@@ -148,10 +156,13 @@ export default function Gamer() {
       </div>
 
       {/* Listagem */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {produtosFiltrados.map(produto => (
-            <div key={produto.id} className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-green-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+            <div 
+              key={produto.id} 
+              onClick={() => handleProductClick(produto.id)}
+              className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-green-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 cursor-pointer"
+            >
               {/* Imagem */}
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -192,7 +203,13 @@ export default function Gamer() {
                   )}
                 </div>
 
-                <button className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Previne o redirecionamento ao clicar no botão
+                    handleProductClick(produto.id);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                >
                   <ShoppingCart size={18} />
                   Comprar agora
                 </button>

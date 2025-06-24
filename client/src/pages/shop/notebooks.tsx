@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Laptop, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
 import { Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Header from "../../components/layout/Header";
 
 
@@ -79,6 +80,8 @@ const mockNotebooks: Notebook[] = [
 ];
 
 export default function Notebooks() {
+  const navigate = useNavigate();
+  
   // Estados dos filtros
   const [precoRange, setPrecoRange] = useState([0, 15000]);
   const [freteGratis, setFreteGratis] = useState(false);
@@ -89,7 +92,11 @@ export default function Notebooks() {
 
   // Filtros dinâmicos baseados nos dados
   const marcasDisponiveis = [...new Set(mockNotebooks.map(n => n.marca))];
-  const categoriasDisponiveis = [...new Set(mockNotebooks.map(n => n.categoria))];
+
+  // Função para redirecionar para página do produto
+  const handleProductClick = (id: number) => {
+    navigate(`/product/${id}`);
+  };
 
   // Aplicando filtros
   const notebooksFiltrados = mockNotebooks.filter(notebook => {
@@ -247,10 +254,13 @@ export default function Notebooks() {
       )}
 
       {/* Lista de Notebooks */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {notebooksFiltrados.map(notebook => (
-            <div key={notebook.id} className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-pink-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10">
+            <div 
+              key={notebook.id} 
+              className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-pink-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10 cursor-pointer"
+              onClick={() => handleProductClick(notebook.id)}
+            >
               {/* Badge de desconto */}
               {notebook.desconto && (
                 <div className="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
@@ -310,9 +320,13 @@ export default function Notebooks() {
                       <span>Grátis</span>
                     </span>
                   )}
-                </div>
-
-                <button className="w-full flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                </div>                <button 
+                  className="w-full flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProductClick(notebook.id);
+                  }}
+                >
                   <ShoppingCart size={18} />
                   Comprar agora
                 </button>
