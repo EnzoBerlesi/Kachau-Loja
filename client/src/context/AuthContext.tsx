@@ -3,8 +3,11 @@ import { jwtDecode } from 'jwt-decode';
 
 interface User {
   id: string;
+  name?: string;
   email: string;
   role: 'ADMIN' | 'CUSTOMER';
+  cpf?: string;
+  endereco?: string;
 }
 
 interface AuthContextType {
@@ -26,6 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const decoded: any = jwtDecode(token);
         setUser({
           id: decoded.sub,
+          name: decoded.name,
           email: decoded.email,
           role: decoded.role,
         });

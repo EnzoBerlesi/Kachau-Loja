@@ -43,6 +43,7 @@ const Admin = () => {
         }
         case "orders": {
           const ordersData = await orderService.getAllOrders();
+          console.log("Orders data:", ordersData);
           setOrders(ordersData);
           break;
         }
