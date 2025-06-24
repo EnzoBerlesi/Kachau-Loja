@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import{ useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Importe apenas os ícones disponíveis
 // Importe apenas os ícones disponíveis
 import { 
   Cpu,          // Para CPU/GPU
   HardDrive,    // Para armazenamento/RAM
-  Star,         // Avaliação
-  Heart,        // Favoritos
   ShoppingCart, // Carrinho
   Truck,        // Frete
-  SlidersHorizontal, // Filtros
   Search        // Busca
 } from 'lucide-react';
 

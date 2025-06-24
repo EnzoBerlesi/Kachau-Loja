@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Laptop, BatteryFull, Lightbulb, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
+import { Laptop, BatteryFull, Lightbulb, Star, ShoppingCart, SlidersHorizontal, Search, } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import type { ProdutoEscritorio } from '../../types/shop';
 

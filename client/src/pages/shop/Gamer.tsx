@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Gamepad2, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
+import { Gamepad2, Star, ShoppingCart, Truck, Search } from 'lucide-react';
 import Header from "../../components/layout/Header";
 import type { Product } from '../../types/shop';
 
@@ -63,8 +63,8 @@ export default function Gamer() {
   
   // Estados dos filtros
   const [precoRange, setPrecoRange] = useState([0, 20000]);
-  const [freteGratis, setFreteGratis] = useState(false);
-  const [avaliacaoMinima, setAvaliacaoMinima] = useState(0);
+  const [freteGratis] = useState(false);
+  const [avaliacaoMinima] = useState(0);
   const [termoBusca, setTermoBusca] = useState('');
 
   // Função para redirecionar para a página de produto

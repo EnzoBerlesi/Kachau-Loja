@@ -1,23 +1,12 @@
 import { useState } from "react";
 import { Header, Footer } from "../../components/layout";
+import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Carrinho() {
-  const [carrinho, setCarrinho] = useState([
-    {
-      id: 1,
-      nome: "Mouse Gamer RGB",
-      preco: 199.99,
-      quantidade: 1,
-      imagem: "https://via.placeholder.com/80",
-    },
-    {
-      id: 2,
-      nome: "Teclado Mecânico 65%",
-      preco: 349.9,
-      quantidade: 2,
-      imagem: "https://via.placeholder.com/80",
-    },
-  ]);
+  const { cart, removeFromCart, clearCart, addToCart } = useCart();
+  const navigate = useNavigate();
 
   const [cupom, setCupom] = useState("");
   const [desconto, setDesconto] = useState(0);
@@ -35,30 +24,47 @@ function Carrinho() {
 
   const calcularFrete = () => {
     if (cep.length === 8) {
-      setFrete(29.9); // valor fictício fixo
+      setFrete(29.9); // valor fictício
     } else {
       alert("CEP inválido. Digite 8 números.");
       setFrete(null);
     }
   };
 
-  const atualizarQuantidade = (id: number, novaQtd: number) => {
-    setCarrinho((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantidade: novaQtd } : item
-      )
-    );
-  };
-
-  const removerItem = (id: number) => {
-    setCarrinho((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = carrinho.reduce(
-    (acc, item) => acc + item.preco * item.quantidade,
-    0
-  );
+  const subtotal = cart.reduce((acc: number, item: { price: number; quantity: number; }) => acc + item.price * item.quantity, 0);
   const total = subtotal * (1 - desconto) + (frete || 0);
+
+  const finalizarCompra = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Você precisa estar logado para finalizar a compra.");
+        return;
+      }
+
+      const response = await axios.post(
+        "http://localhost:3000/checkout",
+        {
+          items: cart.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity
+          }))
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      clearCart();
+      navigate("/order-confirmation", { state: response.data });
+    } catch (error) {
+      console.error("Erro ao finalizar pedido:", error);
+      alert("Erro ao finalizar pedido. Tente novamente.");
+    }
+  };
 
   return (
     <>
@@ -68,35 +74,32 @@ function Carrinho() {
           Seu Carrinho
         </h1>
 
-        {carrinho.length === 0 ? (
+        {cart.length === 0 ? (
           <p className="text-gray-400 text-center">Seu carrinho está vazio.</p>
         ) : (
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl mx-auto animate-fadeIn">
             <ul>
-              {carrinho.map((item) => (
+              {cart.map((item) => (
                 <li
-                  key={item.id}
+                  key={item.productId}
                   className="flex items-center justify-between border-b border-gray-700 py-4 mb-4 transition-all duration-300 hover:bg-gray-700/20 rounded"
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src={item.imagem}
-                      alt={item.nome}
+                      src={`https://via.placeholder.com/80?text=${item.name}`}
+                      alt={item.name}
                       className="w-16 h-16 rounded"
                     />
                     <div>
-                      <p className="font-semibold">{item.nome}</p>
+                      <p className="font-semibold">{item.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <label className="text-sm text-gray-400">Qtd:</label>
                         <input
                           type="number"
                           min={1}
-                          value={item.quantidade}
+                          value={item.quantity}
                           onChange={(e) =>
-                            atualizarQuantidade(
-                              item.id,
-                              parseInt(e.target.value)
-                            )
+                            addToCart({ ...item, quantity: parseInt(e.target.value) - item.quantity })
                           }
                           className="w-16 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white"
                         />
@@ -106,10 +109,10 @@ function Carrinho() {
 
                   <div className="text-right">
                     <p className="text-purple-300 font-bold">
-                      R$ {(item.preco * item.quantidade).toFixed(2)}
+                      R$ {(item.price * item.quantity).toFixed(2)}
                     </p>
                     <button
-                      onClick={() => removerItem(item.id)}
+                      onClick={() => removeFromCart(item.productId)}
                       className="text-sm text-red-400 hover:underline mt-1"
                     >
                       Remover
@@ -119,7 +122,7 @@ function Carrinho() {
               ))}
             </ul>
 
-            {/* Campo de Cupom */}
+            {/* Cupom */}
             <div className="mt-6 flex flex-col sm:flex-row gap-4">
               <input
                 type="text"
@@ -136,7 +139,7 @@ function Carrinho() {
               </button>
             </div>
 
-            {/* Campo de Frete */}
+            {/* Frete */}
             <div className="mt-4 flex flex-col sm:flex-row gap-4">
               <input
                 type="text"
@@ -171,7 +174,10 @@ function Carrinho() {
               </p>
             </div>
 
-            <button className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition-all duration-300 hover:scale-105">
+            <button
+              onClick={finalizarCompra}
+              className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition-all duration-300 hover:scale-105"
+            >
               Finalizar Compra
             </button>
           </div>
