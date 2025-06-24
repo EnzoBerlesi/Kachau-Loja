@@ -2,23 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Laptop, BatteryFull, Lightbulb, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
 import Header from '../../components/layout/Header';
+import type { ProdutoEscritorio } from '../../types/shop';
 
-interface ProdutoEscritorio {
-  id: number;
-  nome: string;
-  preco: number;
-  precoOriginal?: number;
-  imagem: string;
-  freteGratis: boolean;
-  avaliacao: number;
-  marca: string;
-  especificacoes: {
-    bateria: string;
-    peso: string;
-    tela: string;
-  };
-  numeroAvaliacoes: number;
-}
+
 
 // Mock de produtos
 const mockEscritorio: ProdutoEscritorio[] = [

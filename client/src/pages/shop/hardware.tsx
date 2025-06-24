@@ -15,25 +15,8 @@ import {
 
 
 import Header from '../../components/layout/Header';
+import type { Hardware } from '../../types/shop';
 
-interface Hardware {
-  id: number;
-  nome: string;
-  preco: number;
-  precoOriginal?: number;
-  imagem: string;
-  freteGratis: boolean;
-  avaliacao: number;
-  marca: string;
-  tipo: 'GPU' | 'CPU' | 'RAM' | 'Armazenamento' | 'Cooler';
-  especificacoes: {
-    modelo: string;
-    clock?: string; // Para CPUs/GPUs
-    capacidade?: string; // Para RAM/Armazenamento
-    rgb?: boolean; // Luzinha colorida
-  };
-  numeroAvaliacoes: number;
-}
 
 // Mock de hardware
 const mockHardware: Hardware[] = [

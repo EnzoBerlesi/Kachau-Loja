@@ -2,24 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gamepad2, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, X } from 'lucide-react';
 import Header from "../../components/layout/Header";
+import type { Product } from '../../types/shop';
 
-interface Product {
-  id: number;
-  nome: string;
-  preco: number;
-  precoOriginal?: number;
-  imagem: string;
-  freteGratis: boolean;
-  avaliacao: number;
-  marca: string;
-  especificacoes: {
-    processador: string;
-    ram: string;
-    placaVideo: string;
-  };
-  categoria: string;
-  numeroAvaliacoes: number;
-}
 
 // Mock específico para produtos Gamer
 const mockProdutosGamer: Product[] = [
@@ -72,7 +56,6 @@ const mockProdutosGamer: Product[] = [
     categoria: "Gaming",
     numeroAvaliacoes: 342
   },
-  // Adicione mais 3-5 produtos...
 ];
 
 export default function Gamer() {

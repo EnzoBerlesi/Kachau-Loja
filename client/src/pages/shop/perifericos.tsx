@@ -2,24 +2,8 @@ import React, { useState } from 'react';
 import { Headphones, Keyboard, Mouse, Star, Heart, ShoppingCart, Truck, SlidersHorizontal, Search, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
+import type { Periferico } from '../../types/shop';
 
-interface Periferico {
-  id: number;
-  nome: string;
-  preco: number;
-  precoOriginal?: number;
-  imagem: string;
-  freteGratis: boolean;
-  avaliacao: number;
-  marca: string;
-  tipo: 'Teclado' | 'Mouse' | 'Headset' | 'Mousepad';
-  especificacoes: {
-    tipo: string; // Mecânico, Sem Fio, etc.
-    rgb: boolean;
-    conexao: string; // USB, Bluetooth
-  };
-  numeroAvaliacoes: number;
-}
 
 // Mock de periféricos GAMER
 const mockPerifericos: Periferico[] = [
