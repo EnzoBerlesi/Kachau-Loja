@@ -24,7 +24,6 @@ const ListaVendasPage = () => {
     const aplicarFiltros = () => {
       let resultado = [...vendas];
 
-      // Filtro por busca (cliente ou número da venda)
       if (filtros.busca) {
         resultado = resultado.filter(venda =>
           venda.cliente.nome.toLowerCase().includes(filtros.busca.toLowerCase()) ||
@@ -65,6 +64,7 @@ const ListaVendasPage = () => {
     try {
       setLoading(true);
       const vendasData = await vendaService.getAll();
+      console.log
       setVendas(vendasData);
     } catch (error) {
       console.error('Erro ao carregar vendas:', error);

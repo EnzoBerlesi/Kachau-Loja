@@ -3,6 +3,7 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateAdminOrderDto } from './dto/create-admin-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -17,6 +18,12 @@ export class OrdersController {
   @Post()
   async create(@Request() req, @Body() dto: CreateOrderDto) {
     return this.ordersService.createOrder(req.user.userId, dto);
+  }
+
+  @Roles('ADMIN')
+  @Post('admin')
+  async createForCustomer(@Body() dto: CreateAdminOrderDto) {
+    return this.ordersService.createOrder(dto.customerId, { items: dto.items });
   }
 
   @Roles('CUSTOMER')

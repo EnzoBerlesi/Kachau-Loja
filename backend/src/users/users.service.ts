@@ -28,5 +28,18 @@ export class UsersService {
       },
     });
   }
+
+  async findByRole(role: 'ADMIN' | 'CUSTOMER') {
+    return this.prisma.user.findMany({
+      where: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  }
   
 }

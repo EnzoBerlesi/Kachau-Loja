@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
@@ -21,7 +21,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get()
-  async findAll() {
+  async findAll(@Query('role') role?: 'ADMIN' | 'CUSTOMER') {
+    if (role) {
+      return this.usersService.findByRole(role);
+    }
     return this.usersService.findAll();
   }
 }

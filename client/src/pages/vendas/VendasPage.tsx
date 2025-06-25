@@ -106,28 +106,19 @@ const VendasPage = () => {
       return;
     }
 
-    if (localVenda === 'vendedor' && !usuarioSelecionado) {
-      setMessage({ type: 'error', text: 'Vendedor é obrigatório quando local é "Vendedor"' });
-      return;
-    }
-
     try {
       setLoading(true);
 
-      const vendaData: VendaFormData = {
-        clienteId: clienteSelecionado.id,
-        vendedorId: localVenda === 'vendedor' ? usuarioSelecionado?.id : undefined,
-        localVenda,
-        itens: itensVenda.map(item => ({
-          produtoId: item.produto.id,
-          quantidade: item.quantidade,
-          precoUnitario: item.precoUnitario
-        })),
-        formaPagamento: 'dinheiro',
-        observacoes
+      // Preparar dados para o backend (orders endpoint)
+      const orderData = {
+        items: itensVenda.map(item => ({
+          productId: item.produto.id,
+          quantity: item.quantidade
+        }))
       };
 
-      await vendaService.create(vendaData);
+      // Criar pedido através do serviço
+      await vendaService.createOrder(clienteSelecionado.id, orderData);
       
       // Limpar formulário
       setClienteSelecionado(null);
@@ -138,7 +129,8 @@ const VendasPage = () => {
       setMessage({ type: 'success', text: 'Venda finalizada com sucesso!' });
     } catch (error) {
       console.error('Erro ao finalizar venda:', error);
-      setMessage({ type: 'error', text: 'Erro ao finalizar venda' });
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao finalizar venda';
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setLoading(false);
     }

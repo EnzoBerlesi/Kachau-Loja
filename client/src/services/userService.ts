@@ -15,6 +15,12 @@ export const userService = {
     return response.data;
   },
 
+  // GET /users?role=CUSTOMER - Listar usuários por role
+  async getUsersByRole(role: 'CUSTOMER' | 'ADMIN'): Promise<User[]> {
+    const response = await api.get(`/users?role=${role}`);
+    return response.data;
+  },
+
   // GET /users/:id - Buscar usuário por ID (ADMIN) - assumindo que existe
   async getUserById(id: string): Promise<User> {
     const response = await api.get(`/users/${id}`);

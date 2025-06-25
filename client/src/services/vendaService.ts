@@ -1,24 +1,46 @@
 import type { Cliente, ProdutoVenda, Venda, VendaFormData } from '../types/vendas';
+import { userService, type User } from './userService';
+import api from './api';
+
+// Types for backend API
+interface CreateOrderItemDto {
+  productId: string;
+  quantity: number;
+}
+
+interface CreateOrderDto {
+  items: CreateOrderItemDto[];
+}
+
+interface CreateAdminOrderDto {
+  customerId: string;
+  items: CreateOrderItemDto[];
+}
+
+// Função para converter usuários CUSTOMER em clientes
+const convertUserToCliente = (user: User): Cliente => {
+  return {
+    id: user.id,
+    nome: user.name,
+    email: user.email,
+    telefone: '', // Será vazio por não ter no User
+    cpf: '', // Será vazio por não ter no User
+    endereco: {
+      rua: '',
+      numero: '',
+      bairro: '',
+      cidade: '',
+      estado: '',
+      cep: ''
+    },
+    dataCadastro: new Date(user.createdAt),
+    ativo: true
+  };
+};
 
 // Simulação de dados para desenvolvimento
 const mockClientes: Cliente[] = [
-  {
-    id: '1',
-    nome: 'João Silva',
-    email: 'joao@email.com',
-    telefone: '(11) 99999-9999',
-    cpf: '123.456.789-00',
-    endereco: {
-      rua: 'Rua das Flores',
-      numero: '123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      estado: 'SP',
-      cep: '01234-567'
-    },
-    dataCadastro: new Date('2024-01-15'),
-    ativo: true
-  }
+ 
 ];
 
 const mockProdutos: ProdutoVenda[] = [
@@ -41,7 +63,25 @@ const mockVendas: Venda[] = [];
 // Service para Clientes
 export const clienteService = {
   async getAll(): Promise<Cliente[]> {
-    return mockClientes.filter(c => c.ativo);
+    try {
+      // Buscar usuários com role CUSTOMER do backend
+      const users = await userService.getUsersByRole('CUSTOMER');
+      const clientesFromUsers = users.map(convertUserToCliente);
+      
+      // Combinar com clientes mock (para desenvolvimento)
+      const allClientes = [...mockClientes.filter(c => c.ativo), ...clientesFromUsers];
+      
+      // Remover duplicatas baseado no email
+      const uniqueClientes = allClientes.filter((cliente, index, self) => 
+        index === self.findIndex(c => c.email === cliente.email)
+      );
+      
+      return uniqueClientes;
+    } catch (error) {
+      console.error('Erro ao buscar usuários CUSTOMER:', error);
+      // Fallback para clientes mock em caso de erro
+      return mockClientes.filter(c => c.ativo);
+    }
   },
 
   async getById(id: string): Promise<Cliente | null> {
@@ -82,6 +122,17 @@ export const clienteService = {
         c.cpf.includes(termo)
       )
     );
+  },
+
+  // Método específico para buscar usuários CUSTOMER como clientes
+  async getCustomersAsClientes(): Promise<Cliente[]> {
+    try {
+      const users = await userService.getUsersByRole('CUSTOMER');
+      return users.map(convertUserToCliente);
+    } catch (error) {
+      console.error('Erro ao buscar usuários CUSTOMER:', error);
+      return [];
+    }
   }
 };
 
@@ -148,6 +199,33 @@ export const vendaService = {
 
   async getById(id: string): Promise<Venda | null> {
     return mockVendas.find(v => v.id === id) || null;
+  },
+
+  // Novo método para criar pedido no backend
+  async createOrder(customerId: string, orderData: CreateOrderDto): Promise<any> {
+    try {
+      // Usar o endpoint admin para criar pedidos em nome de clientes
+      const adminOrderData: CreateAdminOrderDto = {
+        customerId: customerId,
+        items: orderData.items
+      };
+      
+      const response = await api.post('/orders/admin', adminOrderData);
+      return response.data;
+    } catch (error: any) {
+      console.error('Erro detalhado:', error.response?.data);
+      
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      if (error.response?.status === 401) {
+        throw new Error('É necessário estar logado como administrador para criar vendas');
+      }
+      if (error.response?.status === 403) {
+        throw new Error('Sem permissão para criar pedidos. Verifique se você é um administrador.');
+      }
+      throw new Error('Erro ao criar pedido no sistema');
+    }
   },
 
   async create(vendaData: VendaFormData): Promise<Venda> {
@@ -227,3 +305,30 @@ export const vendaService = {
       .reduce((total, venda) => total + venda.total, 0);
   }
 };
+
+// EXEMPLO DE USO - Como buscar todos os usuários CUSTOMER como clientes:
+/*
+Para buscar apenas usuários com role CUSTOMER:
+const clientesCustomers = await clienteService.getCustomersAsClientes();
+console.log('Usuários CUSTOMER como clientes:', clientesCustomers);
+
+// Para buscar todos os clientes (mock + CUSTOMER users):
+const todosClientes = await clienteService.getAll();
+console.log('Todos os clientes:', todosClientes);
+
+// Exemplo de uso em um componente React:
+const [clientes, setClientes] = useState<Cliente[]>([]);
+
+useEffect(() => {
+  const loadCustomers = async () => {
+    try {
+      const customers = await clienteService.getCustomersAsClientes();
+      setClientes(customers);
+    } catch (error) {
+      console.error('Erro ao carregar clientes:', error);
+    }
+  };
+  
+  loadCustomers();
+}, []);
+*/

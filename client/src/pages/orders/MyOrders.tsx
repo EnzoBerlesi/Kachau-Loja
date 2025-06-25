@@ -124,7 +124,7 @@ function MyOrders() {
                 Você ainda não fez nenhum pedido. Que tal começar agora?
               </p>
               <button
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate('/')}
                 className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
               >
                 Explorar Produtos

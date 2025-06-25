@@ -21,10 +21,12 @@ const VendedorSelector = ({
   const [buscaUsuario, setBuscaUsuario] = useState('');
   const [showUsuarioDropdown, setShowUsuarioDropdown] = useState(false);
 
-  const usuariosFiltrados = usuarios.filter(usuario =>
-    usuario.name.toLowerCase().includes(buscaUsuario.toLowerCase()) ||
-    usuario.email.toLowerCase().includes(buscaUsuario.toLowerCase())
-  );
+  const usuariosFiltrados = usuarios
+    .filter(usuario => usuario.role === 'ADMIN') 
+    .filter(usuario =>
+      usuario.name.toLowerCase().includes(buscaUsuario.toLowerCase()) ||
+      usuario.email.toLowerCase().includes(buscaUsuario.toLowerCase())
+    );
 
   const selecionarUsuario = (usuario: UserType) => {
     setUsuarioSelecionado(usuario);
