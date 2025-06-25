@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import {
   Package,
   Truck,
   Users,
   Tag,
+  BarChart3,
+  FileText,
 } from "lucide-react";
 import { productService, type Product } from "../../services/productService";
 import { categoryService, type Category } from "../../services/categoryService";
@@ -242,6 +245,39 @@ const Admin = () => {
               activeSection={activeSection}
               setActiveSection={setActiveSection}
             />
+          </div>
+
+          {/* Relatórios Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <Link
+              to="/reports-dashboard"
+              className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/50 transition-all duration-300 group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+                  <BarChart3 className="w-6 h-6 text-purple-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-1">Dashboard de Relatórios</h3>
+                  <p className="text-purple-200/80 text-sm">Visão geral do desempenho da loja</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              to="/reports"
+              className="bg-gradient-to-br from-green-600/20 to-teal-600/20 backdrop-blur-sm border border-green-500/30 rounded-xl p-6 hover:border-green-400/50 transition-all duration-300 group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+                  <FileText className="w-6 h-6 text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-1">Relatórios Detalhados</h3>
+                  <p className="text-green-200/80 text-sm">Vendas, clientes, canais e estoque</p>
+                </div>
+              </div>
+            </Link>
           </div>
 
           {/* Dynamic Content Section */}

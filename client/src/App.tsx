@@ -13,9 +13,10 @@ import Perifericos from "./pages/shop/perifericos";
 import Register from "./pages/auth/Register";
 import Profile from "./pages/user/Profile";
 import Admin from "./pages/admin/Admin";
+import Reports from "./pages/admin/reports/Reports";
+import ReportsDashboard from "./pages/admin/reports/ReportsDashboard";
 import Product from "./pages/Product";
 import Products from "./pages/Products";
-import VendasAdmin from "./pages/vendas/VendasAdmin";
 import { PrivateRoutes as PrivateRoute } from "./components/ui";
 import { AdminRoutes as AdminRoute } from "./components/admin";
 import { CartProvider } from "./context/CartContext";
@@ -62,7 +63,8 @@ function AppContent() {
             
             <Route path="/vendas/historico" element={<ListaVendasPage />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/vendas" element={<VendasAdmin />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/reports-dashboard" element={<ReportsDashboard />} />
           </Route>
         </Routes>
       </div>
