@@ -7,7 +7,6 @@ import {
   Truck,
   SlidersHorizontal,
   Search,
-  X,
 } from "lucide-react";
 import { Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";

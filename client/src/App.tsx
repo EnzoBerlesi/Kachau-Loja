@@ -34,41 +34,39 @@ function AppContent() {
   return (
     <AuthProvider onLogout={clearCart}>
       <div className="app">
-        <div className="content">
-        {" "}
+      <div className="content">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/gamer" element={<Gamer />} />
-          <Route path="/escritorio" element={<Escritorio />} />
-          <Route path="/notebooks" element={<Notebooks />} />
-          <Route path="/hardware" element={<Hardware />} />
-          <Route path="/perifericos" element={<Perifericos />} />
-          <Route path="/product/:id" element={<Product />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/gamer" element={<Gamer />} />
+        <Route path="/escritorio" element={<Escritorio />} />
+        <Route path="/notebooks" element={<Notebooks />} />
+        <Route path="/hardware" element={<Hardware />} />
+        <Route path="/perifericos" element={<Perifericos />} />
+        <Route path="/product/:id" element={<Product />} />
 
-          {/* Rotas protegidas */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/carrinho" element={<Carrinho />} />
-             <Route path="/orders" element={<MyOrders />} />
-            <Route path="/orders/:id" element={<OrderDetails />} />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          </Route>
+        {/* Rotas protegidas */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/carrinho" element={<Carrinho />} />
+          <Route path="/orders" element={<MyOrders />} />
+          <Route path="/orders/:id" element={<OrderDetails />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        </Route>
 
-          <Route element={<AdminRoute />}>
-            <Route path="/vendas" element={<DashboardVendas />} />
-            <Route path="/vendas/nova" element={<VendasPage />} />
-            
-            <Route path="/vendas/historico" element={<ListaVendasPage />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/reports-dashboard" element={<ReportsDashboard />} />
-          </Route>
+        <Route element={<AdminRoute />}>
+          <Route path="/vendas" element={<DashboardVendas />} />
+          <Route path="/vendas/nova" element={<VendasPage />} />
+          <Route path="/vendas/historico" element={<ListaVendasPage />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/reports-dashboard" element={<ReportsDashboard />} />
+        </Route>
         </Routes>
       </div>
-    </div>
+      </div>
     </AuthProvider>
   );
 }
