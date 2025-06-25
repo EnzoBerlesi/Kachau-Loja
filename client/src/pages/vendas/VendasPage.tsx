@@ -99,7 +99,7 @@ const VendasPage = () => {
   };
 
   // Função para finalizar a venda
-  const finalizarVenda = async (observacoes?: string) => {
+  const finalizarVenda = async () => {
     if (!clienteSelecionado || itensVenda.length === 0) {
       setMessage({ type: 'error', text: 'Cliente e produtos são obrigatórios' });
       return;

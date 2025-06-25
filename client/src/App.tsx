@@ -15,7 +15,6 @@ import Profile from "./pages/user/Profile";
 import Admin from "./pages/admin/Admin";
 import Product from "./pages/Product";
 import Products from "./pages/Products";
-import VendasAdmin from "./pages/vendas/VendasAdmin";
 import { PrivateRoutes as PrivateRoute } from "./components/ui";
 import { AdminRoutes as AdminRoute } from "./components/admin";
 import { CartProvider } from "./context/CartContext";
@@ -59,10 +58,8 @@ function AppContent() {
           <Route element={<AdminRoute />}>
             <Route path="/vendas" element={<DashboardVendas />} />
             <Route path="/vendas/nova" element={<VendasPage />} />
-            
             <Route path="/vendas/historico" element={<ListaVendasPage />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/vendas" element={<VendasAdmin />} />
           </Route>
         </Routes>
       </div>

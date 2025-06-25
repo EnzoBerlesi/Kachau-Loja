@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
-import type { KeenSliderInstance } from "keen-slider";
 import "keen-slider/keen-slider.min.css";
 
 // ✨ IMPORTAÇÕES DAS SUAS IMAGENS LOCAIS
