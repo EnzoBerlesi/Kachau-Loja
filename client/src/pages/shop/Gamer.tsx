@@ -1,11 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Gamepad2, Star, ShoppingCart, Truck, Search } from 'lucide-react';
+import { Gamepad2, Star, ShoppingCart, Truck, Search, SlidersHorizontal, Heart } from 'lucide-react';
 import Header from "../../components/layout/Header";
-import type { Product } from '../../types/shop';
 
+type Product = {
+  id: number;
+  nome: string;
+  preco: number;
+  precoOriginal?: number;
+  imagem: string;
+  freteGratis: boolean;
+  avaliacao: number;
+  marca: string;
+  especificacoes: {
+    processador: string;
+    ram: string;
+    placaVideo: string;
+  };
+  numeroAvaliacoes: number;
+  desconto?: number;
+};
 
-// Mock específico para produtos Gamer
 const mockProdutosGamer: Product[] = [
   {
     id: 1,
@@ -21,8 +36,8 @@ const mockProdutosGamer: Product[] = [
       ram: "32GB DDR5",
       placaVideo: "RTX 4080"
     },
-    categoria: "Gaming",
-    numeroAvaliacoes: 512
+    numeroAvaliacoes: 512,
+    desconto: 10
   },
   {
     id: 2,
@@ -37,58 +52,62 @@ const mockProdutosGamer: Product[] = [
       ram: "64GB DDR5",
       placaVideo: "RTX 4090"
     },
-    categoria: "Gaming",
     numeroAvaliacoes: 342
   },
-    {
-    id: 2,
-    nome: "PC Gamer Monster",
-    preco: 12000.00,
-    imagem: "https://images.unsplash.com/photo-1591488320449-011701bb6704",
-    freteGratis: true,
-    avaliacao: 5.0,
-    marca: "Alienware",
+  {
+    id: 3,
+    nome: "PC Gamer Pro",
+    preco: 7500.00,
+    precoOriginal: 8500.00,
+    imagem: "https://images.unsplash.com/photo-1563212035-3e8ffdf31f8e",
+    freteGratis: false,
+    avaliacao: 4.7,
+    marca: "Dell",
     especificacoes: {
-      processador: "AMD Ryzen 9 7950X",
-      ram: "64GB DDR5",
-      placaVideo: "RTX 4090"
+      processador: "Intel i7-13700K",
+      ram: "32GB DDR4",
+      placaVideo: "RTX 4070"
     },
-    categoria: "Gaming",
-    numeroAvaliacoes: 342
-  },
+    numeroAvaliacoes: 215,
+    desconto: 12
+  }
 ];
 
 export default function Gamer() {
   const navigate = useNavigate();
-  
-  // Estados dos filtros
+
+  // Estados dos filtros (igual ao dos notebooks)
   const [precoRange, setPrecoRange] = useState([0, 20000]);
-  const [freteGratis] = useState(false);
-  const [avaliacaoMinima] = useState(0);
-  const [termoBusca, setTermoBusca] = useState('');
+  const [freteGratis, setFreteGratis] = useState(false);
+  const [avaliacaoMinima, setAvaliacaoMinima] = useState(0);
+  const [marcasSelecionadas, setMarcasSelecionadas] = useState<string[]>([]);
+  const [termoBusca, setTermoBusca] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Função para redirecionar para a página de produto
-  const handleProductClick = (productId: number) => {
-    navigate(`/product/${productId}`);
-  };
+  // Filtros dinâmicos baseados nos dados
+  const marcasDisponiveis = [...new Set(mockProdutosGamer.map((p) => p.marca))];
 
-  // Filtros
-  const produtosFiltrados = mockProdutosGamer.filter(produto => {
+  // Aplicando filtros
+  const produtosFiltrados = mockProdutosGamer.filter((produto) => {
     if (produto.preco < precoRange[0] || produto.preco > precoRange[1]) return false;
     if (freteGratis && !produto.freteGratis) return false;
     if (produto.avaliacao < avaliacaoMinima) return false;
+    if (marcasSelecionadas.length > 0 && !marcasSelecionadas.includes(produto.marca)) return false;
     if (termoBusca && !produto.nome.toLowerCase().includes(termoBusca.toLowerCase())) return false;
+    
     return true;
   });
 
-  // Componente de estrelas
+  // Componente de estrelas reutilizável
   const RenderStars = ({ rating }: { rating: number }) => (
     <div className="flex">
       {[1, 2, 3, 4, 5].map((star) => (
-        <Star 
+        <Star
           key={star}
           size={16}
-          className={`${star <= rating ? 'text-yellow-400 fill-current' : 'text-gray-400'}`}
+          className={`${
+            star <= rating ? "text-yellow-400 fill-current" : "text-gray-400"
+          }`}
         />
       ))}
     </div>
@@ -103,11 +122,11 @@ export default function Gamer() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Gamepad2 className="text-green-400" size={32} />
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-purple-300">
-            GAMER
+            PRODUTOS GAMER
           </h1>
         </div>
         <p className="text-gray-300 max-w-2xl mx-auto">
-          Hardware de alta performance para dominar nos games. Frete grátis para assinantes!
+          Hardware de alta performance para dominar nos games
         </p>
       </div>
 
@@ -115,7 +134,10 @@ export default function Gamer() {
       <div className="sticky top-0 z-10 bg-gray-900/80 backdrop-blur-md border-b border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <input
               type="text"
               placeholder="Pesquisar produtos gamer..."
@@ -124,28 +146,128 @@ export default function Gamer() {
               onChange={(e) => setTermoBusca(e.target.value)}
             />
           </div>
-          
-          {/* Filtro de preço (simplificado) */}
-          <select 
-            onChange={(e) => setPrecoRange([0, Number(e.target.value)])}
-            className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700"
+
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-800 hover:bg-purple-700 rounded-lg transition-colors"
           >
-            <option value="20000">Todos os preços</option>
-            <option value="5000">Até R$ 5.000</option>
-            <option value="10000">Até R$ 10.000</option>
-            <option value="20000">Até R$ 20.000</option>
-          </select>
+            <SlidersHorizontal size={18} />
+            <span>Filtros</span>
+          </button>
         </div>
       </div>
 
-      {/* Listagem */}
-      <main className="max-w-7xl mx-auto px-4 py-8">        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {produtosFiltrados.map(produto => (
-            <div 
-              key={produto.id} 
-              onClick={() => handleProductClick(produto.id)}
+      {/* Filtros expandidos */}
+      {showFilters && (
+        <div className="bg-gray-800/90 border-b border-gray-700">
+          <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Faixa de Preço */}
+            <div>
+              <h3 className="font-medium mb-3 text-green-400">Faixa de Preço</h3>
+              <div className="space-y-4">
+                <input
+                  type="range"
+                  min="0"
+                  max="20000"
+                  step="100"
+                  value={precoRange[1]}
+                  onChange={(e) =>
+                    setPrecoRange([precoRange[0], Number(e.target.value)])
+                  }
+                  className="w-full accent-green-500"
+                />
+                <div className="flex justify-between text-sm text-gray-300">
+                  <span>R$ {precoRange[0].toLocaleString("pt-BR")}</span>
+                  <span>R$ {precoRange[1].toLocaleString("pt-BR")}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Marcas */}
+            <div>
+              <h3 className="font-medium mb-3 text-green-400">Marcas</h3>
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {marcasDisponiveis.map((marca) => (
+                  <label
+                    key={marca}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={marcasSelecionadas.includes(marca)}
+                      onChange={() =>
+                        setMarcasSelecionadas((prev) =>
+                          prev.includes(marca)
+                            ? prev.filter((m) => m !== marca)
+                            : [...prev, marca]
+                        )
+                      }
+                      className="rounded text-green-500 focus:ring-green-500"
+                    />
+                    <span>{marca}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Avaliação */}
+            <div>
+              <h3 className="font-medium mb-3 text-green-400">
+                Avaliação Mínima
+              </h3>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setAvaliacaoMinima(star)}
+                    className={`p-1 ${
+                      avaliacaoMinima >= star
+                        ? "text-yellow-400"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    <Star
+                      size={20}
+                      fill={avaliacaoMinima >= star ? "currentColor" : "none"}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Outros Filtros */}
+            <div>
+              <h3 className="font-medium mb-3 text-green-400">Outros</h3>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={freteGratis}
+                  onChange={() => setFreteGratis(!freteGratis)}
+                  className="rounded text-green-500 focus:ring-green-500"
+                />
+                <span>Frete Grátis</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lista de Produtos */}
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {produtosFiltrados.map((produto) => (
+            <div
+              key={produto.id}
               className="group bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 hover:border-green-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 cursor-pointer"
+              onClick={() => navigate(`/product/${produto.id}`)}
             >
+              {/* Badge de desconto */}
+              {produto.desconto && (
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+                  -{produto.desconto}%
+                </div>
+              )}
+
               {/* Imagem */}
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -153,31 +275,52 @@ export default function Gamer() {
                   alt={produto.nome}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                {produto.precoOriginal && (
-                  <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    -{Math.round((1 - produto.preco / produto.precoOriginal) * 100)}%
-                  </div>
-                )}
               </div>
 
               {/* Info */}
               <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2">{produto.nome}</h3>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-semibold text-lg line-clamp-2">
+                    {produto.nome}
+                  </h3>
+                  <button className="text-gray-400 hover:text-green-400">
+                    <Heart size={20} />
+                  </button>
+                </div>
                 <div className="flex items-center gap-2 mb-3">
                   <RenderStars rating={produto.avaliacao} />
-                  <span className="text-sm text-gray-400">({produto.numeroAvaliacoes})</span>
+                  <span className="text-sm text-gray-400">
+                    ({produto.numeroAvaliacoes})
+                  </span>
                 </div>
-
                 <div className="space-y-2 text-sm text-gray-300 mb-4">
-                  <p><span className="text-green-400">GPU:</span> {produto.especificacoes.placaVideo}</p>
-                  <p><span className="text-green-400">CPU:</span> {produto.especificacoes.processador}</p>
-                  <p><span className="text-green-400">RAM:</span> {produto.especificacoes.ram}</p>
-                </div>
-
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xl font-bold text-green-400">
-                    R$ {produto.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  <p className="flex items-center gap-1">
+                    <span className="text-green-400">GPU:</span> {produto.especificacoes.placaVideo}
                   </p>
+                  <p className="flex items-center gap-1">
+                    <span className="text-green-400">CPU:</span> {produto.especificacoes.processador}
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <span className="text-green-400">RAM:</span> {produto.especificacoes.ram}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xl font-bold text-green-400">
+                      R${" "}
+                      {produto.preco.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                    {produto.precoOriginal && (
+                      <p className="text-xs text-gray-400 line-through">
+                        R${" "}
+                        {produto.precoOriginal.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </p>
+                    )}
+                  </div>
                   {produto.freteGratis && (
                     <span className="flex items-center gap-1 text-green-400 text-sm">
                       <Truck size={16} />
@@ -185,13 +328,12 @@ export default function Gamer() {
                     </span>
                   )}
                 </div>
-
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation(); // Previne o redirecionamento ao clicar no botão
-                    handleProductClick(produto.id);
-                  }}
+                <button
                   className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/product/${produto.id}`);
+                  }}
                 >
                   <ShoppingCart size={18} />
                   Comprar agora
@@ -200,6 +342,25 @@ export default function Gamer() {
             </div>
           ))}
         </div>
+        {produtosFiltrados.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-xl text-gray-400">
+              Nenhum produto encontrado com esses filtros
+            </p>
+            <button
+              onClick={() => {
+                setPrecoRange([0, 20000]);
+                setFreteGratis(false);
+                setAvaliacaoMinima(0);
+                setMarcasSelecionadas([]);
+                setTermoBusca("");
+              }}
+              className="mt-4 px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

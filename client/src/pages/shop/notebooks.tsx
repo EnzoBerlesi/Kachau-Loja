@@ -136,7 +136,7 @@ export default function Notebooks() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Laptop className="text-pink-400" size={32} />
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-300">
-              NOTEBOOKS TOPZERA
+              NOTEBOOKS
             </h1>
           </div>
           <p className="text-gray-300 max-w-2xl mx-auto">
