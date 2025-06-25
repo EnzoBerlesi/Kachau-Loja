@@ -3,7 +3,6 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 
 // ✨ IMPORTAÇÕES DAS SUAS IMAGENS LOCAIS
-import notepromo from "/assets/carrossel/notepromo.png";
 import tecladogamer from "/assets/carrossel/tecladogamer.jpg";
 import notebookfoda from "/assets/carrossel/notebookfoda.jpg";
 import MouseGamer from "/assets/carrossel/MouseGamer.jpg";
@@ -70,7 +69,6 @@ const Carousel = () => {
         className="keen-slider w-full h-full rounded-lg overflow-hidden"
       >
         {[
-          notepromo,
           tecladogamer,
           notebookfoda,
           MouseGamer,

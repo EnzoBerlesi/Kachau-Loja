@@ -100,9 +100,13 @@ function Home() {
                   className="group bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300 transform hover:scale-[1.02] block"
                 >
                   <img
-                    src={getProductImage(product.id, product.categoryId)}
+                    src={getProductImage(product.id)}
                     alt={product.name}
-                    className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-40 object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/assets/vite.svg'; // Fallback visual
+                      e.currentTarget.alt = 'Imagem não disponível';
+                    }}
                   />
                   <div className="p-3">
                     <h3 className="font-semibold text-purple-100 group-hover:text-purple-200 transition-colors">
@@ -162,9 +166,13 @@ function Home() {
                   className="group bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:shadow-2xl hover:border-purple-400/30 transition-all duration-300 transform hover:scale-[1.02] block"
                 >
                   <img
-                    src={getProductImage(product.id, product.categoryId)}
+                    src={getProductImage(product.id)}
                     alt={product.name}
-                    className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-40 object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/assets/vite.svg'; // Fallback visual
+                      e.currentTarget.alt = 'Imagem não disponível';
+                    }}
                   />
                   <div className="p-3">
                     <h3 className="font-semibold text-purple-100 group-hover:text-purple-200 transition-colors">
