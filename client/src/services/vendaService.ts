@@ -194,7 +194,85 @@ export const produtoVendaService = {
 // Service para Vendas
 export const vendaService = {
   async getAll(): Promise<Venda[]> {
-    return mockVendas;
+    try {
+      // Buscar pedidos do backend - apenas admins podem ver todos os pedidos
+      const response = await api.get('/orders');
+      const orders = response.data;
+      
+      // Se não há pedidos, retornar array vazio
+      if (!orders || !Array.isArray(orders)) {
+        return [];
+      }
+      
+      // Converter orders do backend para o formato Venda do frontend
+      const vendas: Venda[] = orders.map((order: any) => ({
+        id: order.id,
+        numeroVenda: `V${order.id.slice(-8)}`, // Usar parte do ID como número
+        clienteId: order.userId,
+        cliente: {
+          id: order.user.id,
+          nome: order.user.name,
+          email: order.user.email,
+          telefone: '', // Não disponível no backend atual
+          cpf: '', // Não disponível no backend atual
+          endereco: {
+            rua: '',
+            numero: '',
+            bairro: '',
+            cidade: '',
+            estado: '',
+            cep: ''
+          },
+          dataCadastro: new Date(order.user.createdAt),
+          ativo: true
+        },
+        itens: order.items.map((item: any) => ({
+          produtoId: item.productId,
+          produto: {
+            id: item.product.id,
+            nome: item.product.name,
+            descricao: item.product.description,
+            preco: item.product.price,
+            categoria: item.product.category?.name || 'Sem categoria',
+            estoque: item.product.stock,
+            dataCadastro: new Date(item.product.createdAt),
+            ativo: true
+          },
+          quantidade: item.quantity,
+          precoUnitario: item.price,
+          subtotal: item.price * item.quantity
+        })),
+        subtotal: order.total,
+        desconto: 0, // Não implementado no backend
+        total: order.total,
+        formaPagamento: 'dinheiro' as const, // Padrão, não implementado no backend
+        status: mapOrderStatusToVendaStatus(order.status),
+        localVenda: 'vendedor' as const, // Padrão
+        dataVenda: new Date(order.createdAt),
+        vendedorId: 'admin', // Padrão para vendas feitas por admin
+        observacoes: undefined
+      }));
+      
+      return vendas;
+    } catch (error: any) {
+      console.error('Erro ao buscar vendas do backend:', error);
+      
+      // Se o erro for de autenticação, mostrar mensagem específica
+      if (error.response?.status === 401) {
+        console.warn('Usuário não autenticado para buscar vendas');
+        return [];
+      }
+      
+      // Se o erro for de permissão, mostrar mensagem específica
+      if (error.response?.status === 403) {
+        console.warn('Usuário sem permissão para buscar todas as vendas');
+        return [];
+      }
+      
+      // Para outros erros, usar fallback
+      console.warn('Usando dados mock como fallback');
+      return mockVendas;
+    }
   },
 
   async getById(id: string): Promise<Venda | null> {
@@ -303,6 +381,22 @@ export const vendaService = {
     return vendas
       .filter(v => v.status === 'pago')
       .reduce((total, venda) => total + venda.total, 0);
+  }
+};
+
+// Função para mapear status do backend para frontend
+const mapOrderStatusToVendaStatus = (backendStatus: string): 'pendente' | 'pago' | 'cancelado' | 'devolvido' => {
+  switch (backendStatus) {
+    case 'PENDING':
+      return 'pendente';
+    case 'PAID':
+      return 'pago';
+    case 'SHIPPED':
+      return 'pago'; // Consideramos shipped como pago
+    case 'DELIVERED':
+      return 'pago'; // Consideramos delivered como pago
+    default:
+      return 'pendente';
   }
 };
 

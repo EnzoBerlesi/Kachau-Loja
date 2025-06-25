@@ -8,6 +8,7 @@ const ListaVendasPage = () => {
   const [vendas, setVendas] = useState<Venda[]>([]);
   const [vendasFiltradas, setVendasFiltradas] = useState<Venda[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filtros, setFiltros] = useState({
     busca: '',
     status: '' as '' | Venda['status'],
@@ -63,11 +64,11 @@ const ListaVendasPage = () => {
   const carregarVendas = async () => {
     try {
       setLoading(true);
+      setError(null);
       const vendasData = await vendaService.getAll();
-      console.log
       setVendas(vendasData);
-    } catch (error) {
-      console.error('Erro ao carregar vendas:', error);
+    } catch (error: any) {
+      setError('Erro ao carregar vendas. Verifique se você está logado como administrador.');
     } finally {
       setLoading(false);
     }
@@ -158,6 +159,12 @@ const ListaVendasPage = () => {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Histórico de Vendas</h1>
             <p className="text-gray-600">Visualize e gerencie todas as vendas realizadas</p>
+            
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700">{error}</p>
+              </div>
+            )}
           </div>
 
           {/* Estatísticas */}

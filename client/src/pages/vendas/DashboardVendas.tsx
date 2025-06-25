@@ -15,6 +15,7 @@ const DashboardVendas = () => {
   const [vendas, setVendas] = useState<Venda[]>([]);
   const [produtos, setProdutos] = useState<ProdutoVenda[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [periodo, setPeriodo] = useState('30'); // dias
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const DashboardVendas = () => {
   const carregarDados = async () => {
     try {
       setLoading(true);
+      setError(null);
       const [vendasData, produtosData] = await Promise.all([
         vendaService.getAll(),
         produtoVendaService.getAll()
@@ -31,8 +33,8 @@ const DashboardVendas = () => {
       
       setVendas(vendasData);
       setProdutos(produtosData);
-    } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+    } catch (error: any) {
+      setError('Erro ao carregar dados das vendas. Verifique se você está logado como administrador.');
     } finally {
       setLoading(false);
     }
@@ -270,6 +272,15 @@ const DashboardVendas = () => {
           </div>
         </div>
       </div>
+
+      {/* Mensagem de erro */}
+      {error && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+            <p className="text-red-400">{error}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
