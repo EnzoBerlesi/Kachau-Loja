@@ -19,7 +19,7 @@ const Carousel = () => {
         perView: 1,
         spacing: 0,
       },
-      dragSpeed: 0.6,
+      dragSpeed: 0.6, // Velocidade do arraste manual, não do autoplay
       created() {
         setLoaded(true);
       },
@@ -27,17 +27,34 @@ const Carousel = () => {
       rubberband: false,
     },
     [
+      // ✨ COMEÇO DA CORREÇÃO NO PLUGIN DO AUTOPLAY
       (slider) => {
         let timeout: ReturnType<typeof setTimeout>;
-        function nextTimeout() {
+
+        // Função para iniciar o próximo timeout
+        function startAutoPlay() {
+          // 1. SEMPRE LIMPE O TIMEOUT ANTERIOR ANTES DE CRIAR UM NOVO
+          clearTimeout(timeout);
           timeout = setTimeout(() => {
             slider.next();
-          }, 5000);
+          }, 3000); // ✨ Ajuste este valor (em milissegundos) para a velocidade desejada (ex: 3000ms = 3 segundos)
         }
-        slider.on("created", nextTimeout);
-        slider.on("dragStarted", () => clearTimeout(timeout));
-        slider.on("animationEnded", nextTimeout);
+
+        // Funções para pausar o autoplay
+        function stopAutoPlay() {
+          clearTimeout(timeout);
+        }
+
+        // Eventos que interagem com o autoplay
+        slider.on("created", startAutoPlay);
+        slider.on("dragStarted", stopAutoPlay); // Pausa ao começar a arrastar
+        slider.on("animationEnded", startAutoPlay); // Reinicia após a animação terminar
+        slider.on("detailsChanged", startAutoPlay); // Garante que o autoplay é reiniciado em mudanças de detalhes (como navegação manual via botões)
+
+        // Limpeza do timeout quando o componente é desmontado
+        slider.on("destroyed", stopAutoPlay);
       },
+      // ✨ FIM DA CORREÇÃO NO PLUGIN DO AUTOPLAY
     ]
   );
 
@@ -53,11 +70,10 @@ const Carousel = () => {
         ref={sliderRef}
         className="keen-slider w-full h-full rounded-lg overflow-hidden"
       >
-        {/* ✨ UTILIZANDO AS IMAGENS IMPORTADAS */}
         {[
-          notepromo, // Imagem de teste 1
-          tecladogamer, // Imagem de teste 2
-          notebookfoda, // Repetindo para ter 6 slides
+          notepromo,
+          tecladogamer,
+          notebookfoda,
           MouseGamer,
           fonegamer,
         ].map((imageSrc, index) => (
@@ -66,9 +82,9 @@ const Carousel = () => {
             className="keen-slider__slide !min-w-full flex items-center justify-center bg-black"
           >
             <img
-              src={imageSrc} // Agora 'imageSrc' já é a URL correta após a importação
+              src={imageSrc}
               alt={`Produto ${index + 1}`}
-              className="w-full h-full object-cover" // Voltamos para object-cover
+              className="w-full h-full object-cover"
               loading="lazy"
             />
           </div>
@@ -78,14 +94,28 @@ const Carousel = () => {
       {loaded && instanceRef.current && (
         <>
           <button
-            onClick={() => instanceRef.current?.prev()}
+            onClick={() => {
+              instanceRef.current?.prev();
+              // ✨ Adicionei uma pausa/reinício do autoplay após clique nos botões
+              // Isso é importante para que o autoplay não continue imediatamente após a interação manual
+              // e para garantir que o timeout seja limpo e reiniciado corretamente.
+              // Você pode chamar a função 'startAutoPlay' diretamente se a tiver no escopo
+              // ou simular o evento 'detailsChanged' que já é escutado.
+              // Uma forma simples é chamar 'instanceRef.current.emit("detailsChanged")'
+              // se você quiser que o KeenSlider reinicie o autoplay por você.
+              instanceRef.current?.emit("detailsChanged");
+            }}
             className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20 hover:bg-black/80 transition-colors"
             aria-label="Slide anterior"
           >
             ◀
           </button>
           <button
-            onClick={() => instanceRef.current?.next()}
+            onClick={() => {
+              instanceRef.current?.next();
+              // ✨ Mesmo para o botão "Próximo"
+              instanceRef.current?.emit("detailsChanged");
+            }}
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-20 hover:bg-black/80 transition-colors"
             aria-label="Próximo slide"
           >
