@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, Eye, Calendar, DollarSign, Users, Package } from 'lucide-react';
+import { Search, Filter, Eye, Calendar, DollarSign, Users, Package, ShoppingCart, Store } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import { vendaService } from '../../services/vendaService';
 import type { Venda } from '../../types/vendas';
@@ -13,6 +13,7 @@ const ListaVendasPage = () => {
     busca: '',
     status: '' as '' | Venda['status'],
     formaPagamento: '' as '' | Venda['formaPagamento'],
+    canal: '' as '' | 'ecommerce' | 'loja-fisica',
     dataInicio: '',
     dataFim: ''
   });
@@ -41,6 +42,14 @@ const ListaVendasPage = () => {
       // Filtro por forma de pagamento
       if (filtros.formaPagamento) {
         resultado = resultado.filter(venda => venda.formaPagamento === filtros.formaPagamento);
+      }
+
+      // Filtro por canal de venda
+      if (filtros.canal) {
+        resultado = resultado.filter((venda) => {
+          const vendaIsEcommerce = isEcommerce(vendas.indexOf(venda));
+          return filtros.canal === 'ecommerce' ? vendaIsEcommerce : !vendaIsEcommerce;
+        });
       }
 
       // Filtro por data
@@ -123,18 +132,41 @@ const ListaVendasPage = () => {
     }
   };
 
+  // Função para determinar se a venda é e-commerce (1 a cada 2 vendas)
+  const isEcommerce = (index: number) => {
+    return (index + 1) % 2 === 0; // A cada 2 vendas, a segunda é e-commerce
+  };
+
+  // Componente para exibir a tag de canal de venda
+  const CanalVendaTag = ({ isEcommerce }: { isEcommerce: boolean }) => {
+    if (isEcommerce) {
+      return (
+        <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+          <ShoppingCart size={12} />
+          E-commerce
+        </div>
+      );
+    }
+    return (
+      <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+        <Store size={12} />
+        Loja Física
+      </div>
+    );
+  };
+
   const calcularEstatisticas = () => {
     const vendasPagas = vendasFiltradas.filter(v => v.status === 'pago');
-    const totalVendas = vendasPagas.reduce((sum, venda) => sum + venda.total, 0);
+    const totalVendido = vendasPagas.reduce((sum, venda) => sum + venda.total, 0);
     const totalItens = vendasFiltradas.reduce((sum, venda) => 
       sum + venda.itens.reduce((itemSum, item) => itemSum + item.quantidade, 0), 0
     );
     
     return {
       totalVendas: vendasFiltradas.length,
-      totalVendido: totalVendas,
+      totalVendido: totalVendido,
       totalItens,
-      ticketMedio: vendasPagas.length > 0 ? totalVendas / vendasPagas.length : 0
+      ticketMedio: vendasPagas.length > 0 ? totalVendido / vendasPagas.length : 0
     };
   };
 
@@ -225,7 +257,7 @@ const ListaVendasPage = () => {
               <h2 className="text-lg font-semibold">Filtros</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                 <input
@@ -260,6 +292,16 @@ const ListaVendasPage = () => {
                 <option value="cartao-debito">Cartão de Débito</option>
                 <option value="pix">PIX</option>
                 <option value="parcelado">Parcelado</option>
+              </select>
+
+              <select
+                value={filtros.canal}
+                onChange={(e) => setFiltros(prev => ({ ...prev, canal: e.target.value as '' | 'ecommerce' | 'loja-fisica' }))}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">Todos os Canais</option>
+                <option value="ecommerce">E-commerce</option>
+                <option value="loja-fisica">Loja Física</option>
               </select>
 
               <input
@@ -300,6 +342,9 @@ const ListaVendasPage = () => {
                       Pagamento
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Canal
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -309,7 +354,7 @@ const ListaVendasPage = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {vendasFiltradas.length > 0 ? (
-                    vendasFiltradas.map(venda => (
+                    vendasFiltradas.map((venda, index) => (
                       <tr key={venda.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
@@ -351,6 +396,9 @@ const ListaVendasPage = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+                          <CanalVendaTag isEcommerce={isEcommerce(index)} />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(venda.status)}`}>
                             {venda.status.charAt(0).toUpperCase() + venda.status.slice(1)}
                           </span>
@@ -365,7 +413,7 @@ const ListaVendasPage = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center">
                           <Package size={48} className="text-gray-300 mb-4" />
                           <p className="text-lg">Nenhuma venda encontrada</p>
