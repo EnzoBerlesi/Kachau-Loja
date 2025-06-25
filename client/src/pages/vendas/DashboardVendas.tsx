@@ -6,7 +6,9 @@ import {
   DollarSign,
   ShoppingCart,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Users,
+  Crown
 } from 'lucide-react';
 import { vendaService, produtoVendaService } from '../../services/vendaService';
 import type { Venda, ProdutoVenda } from '../../types/vendas';
@@ -52,7 +54,7 @@ const DashboardVendas = () => {
 
   // Calcular estatísticas
   const calcularEstatisticas = () => {
-    const vendasPagas = vendasPeriodo.filter(v => v.status === 'pago');
+    const vendasPagas = vendasPeriodo.filter(v => v.status === 'pendente');
     const totalVendido = vendasPagas.reduce((sum, venda) => sum + venda.total, 0);
     const totalItens = vendasPeriodo.reduce((sum, venda) => 
       sum + venda.itens.reduce((itemSum, item) => itemSum + item.quantidade, 0), 0
@@ -88,8 +90,40 @@ const DashboardVendas = () => {
     return produtos.filter(produto => produto.estoque <= 10 && produto.ativo);
   };
 
+  // Top clientes que mais compram
+  const getTopClientes = () => {
+    const clientesMap = new Map();
+    
+    vendasPeriodo.forEach(venda => {
+      if (venda.status === 'pendente') {
+        const clienteId = venda.cliente.id;
+        const clienteExistente = clientesMap.get(clienteId);
+        
+        if (clienteExistente) {
+          clienteExistente.totalCompras += venda.total;
+          clienteExistente.quantidadeVendas += 1;
+          clienteExistente.totalItens += venda.itens.reduce((sum, item) => sum + item.quantidade, 0);
+        } else {
+          clientesMap.set(clienteId, {
+            id: clienteId,
+            nome: venda.cliente.nome,
+            email: venda.cliente.email,
+            totalCompras: venda.total,
+            quantidadeVendas: 1,
+            totalItens: venda.itens.reduce((sum, item) => sum + item.quantidade, 0)
+          });
+        }
+      }
+    });
+
+    return Array.from(clientesMap.values())
+      .sort((a, b) => b.totalCompras - a.totalCompras)
+      .slice(0, 5);
+  };
+
   const stats = calcularEstatisticas();
   const produtosEstoqueBaixo = getProdutosEstoqueBaixo();
+  const topClientes = getTopClientes();
 
   const formatarMoeda = (valor: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -219,6 +253,75 @@ const DashboardVendas = () => {
                 <p className="text-sm text-yellow-300 mt-3">
                   E mais {produtosEstoqueBaixo.length - 6} produtos...
                 </p>
+              )}
+            </div>
+          )}
+
+          {/* Top Clientes */}
+          {topClientes.length > 0 && (
+            <div className="bg-blue-500/10 border border-blue-500/30 p-6 rounded-lg backdrop-blur-sm mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Crown className="text-blue-400" size={20} />
+                <h2 className="text-lg font-semibold text-blue-300">
+                  Top Clientes - Maiores Compradores
+                </h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {topClientes.map((cliente, index) => (
+                  <div key={cliente.id} className="bg-gray-800/30 backdrop-blur-sm p-4 rounded-lg border border-blue-500/20 relative">
+                    {index === 0 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center">
+                        <Crown className="text-yellow-900" size={12} />
+                      </div>
+                    )}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">
+                          {cliente.nome.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-white truncate">{cliente.nome}</p>
+                        <p className="text-sm text-gray-300 truncate">{cliente.email}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-400">Total Gasto:</span>
+                        <span className="text-sm font-medium text-blue-400">
+                          {formatarMoeda(cliente.totalCompras)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-400">Compras:</span>
+                        <span className="text-sm font-medium text-white">
+                          {cliente.quantidadeVendas} vendas
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-400">Itens:</span>
+                        <span className="text-sm font-medium text-white">
+                          {cliente.totalItens} produtos
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center pt-1 border-t border-gray-700/50">
+                        <span className="text-sm text-gray-400">Ticket Médio:</span>
+                        <span className="text-sm font-medium text-green-400">
+                          {formatarMoeda(cliente.totalCompras / cliente.quantidadeVendas)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {topClientes.length === 0 && (
+                <div className="text-center py-8">
+                  <Users className="text-blue-400 mx-auto mb-2" size={48} />
+                  <p className="text-blue-300">Nenhuma venda registrada no período selecionado</p>
+                </div>
               )}
             </div>
           )}

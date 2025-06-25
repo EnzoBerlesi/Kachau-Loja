@@ -20,52 +20,64 @@ import { PrivateRoutes as PrivateRoute } from "./components/ui";
 import { AdminRoutes as AdminRoute } from "./components/admin";
 import { CartProvider } from "./context/CartContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useCart } from "./context/useCart";
 import { VendasPage, ListaVendasPage, DashboardVendas } from "./pages/vendas";
 import OrderConfirmation from "./pages/orders/OrderConfirmation";
 import MyOrders from "./pages/orders/MyOrders";
 import OrderDetails from "./pages/orders/OrderDetails";
+
+function AppContent() {
+  const { clearCart } = useCart();
+
+  return (
+    <AuthProvider onLogout={clearCart}>
+      <div className="app">
+        <div className="content">
+        {" "}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/gamer" element={<Gamer />} />
+          <Route path="/escritorio" element={<Escritorio />} />
+          <Route path="/notebooks" element={<Notebooks />} />
+          <Route path="/hardware" element={<Hardware />} />
+          <Route path="/perifericos" element={<Perifericos />} />
+          <Route path="/product/:id" element={<Product />} />
+
+          {/* Rotas protegidas */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/carrinho" element={<Carrinho />} />
+             <Route path="/orders" element={<MyOrders />} />
+            <Route path="/orders/:id" element={<OrderDetails />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          </Route>
+
+          <Route element={<AdminRoute />}>
+            <Route path="/vendas" element={<DashboardVendas />} />
+            <Route path="/vendas/nova" element={<VendasPage />} />
+            
+            <Route path="/vendas/historico" element={<ListaVendasPage />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/vendas" element={<VendasAdmin />} />
+          </Route>
+        </Routes>
+      </div>
+    </div>
+    </AuthProvider>
+  );
+}
 
 function App() {
   return (
     <Router>
       <NotificationProvider>
         <CartProvider>
-          <div className="app">
-            <div className="content">
-            {" "}
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/gamer" element={<Gamer />} />
-              <Route path="/escritorio" element={<Escritorio />} />
-              <Route path="/notebooks" element={<Notebooks />} />
-              <Route path="/hardware" element={<Hardware />} />
-              <Route path="/perifericos" element={<Perifericos />} />
-              <Route path="/product/:id" element={<Product />} />
-
-              {/* Rotas protegidas */}
-              <Route element={<PrivateRoute />}>
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/carrinho" element={<Carrinho />} />
-                 <Route path="/orders" element={<MyOrders />} />
-                <Route path="/orders/:id" element={<OrderDetails />} />
-                <Route path="/vendas" element={<DashboardVendas />} />
-                <Route path="/vendas/nova" element={<VendasPage />} />
-                
-                <Route path="/vendas/historico" element={<ListaVendasPage />} />
-                <Route path="/order-confirmation" element={<OrderConfirmation />} />
-              </Route>
-
-              <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/vendas" element={<VendasAdmin />} />
-              </Route>
-            </Routes>
-          </div>
-        </div>
-      </CartProvider>
+          <AppContent />
+        </CartProvider>
       </NotificationProvider>
     </Router>
   );

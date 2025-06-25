@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Users, Package, CreditCard } from 'lucide-react';
 import { 
   ClienteSelector, 
   ClienteModal, 

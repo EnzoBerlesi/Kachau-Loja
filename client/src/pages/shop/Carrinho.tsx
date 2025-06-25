@@ -12,6 +12,7 @@ function Carrinho() {
   const [desconto, setDesconto] = useState(0);
   const [cep, setCep] = useState("");
   const [frete, setFrete] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const aplicarCupom = () => {
     if (cupom.toLowerCase() === "kachau10") {
@@ -36,6 +37,7 @@ function Carrinho() {
 
   const finalizarCompra = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -63,6 +65,8 @@ function Carrinho() {
     } catch (error) {
       console.error("Erro ao finalizar pedido:", error);
       alert("Erro ao finalizar pedido. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,9 +180,21 @@ function Carrinho() {
 
             <button
               onClick={finalizarCompra}
-              className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold transition-all duration-300 hover:scale-105"
+              disabled={loading}
+              className={`mt-6 w-full py-3 rounded text-white font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                loading 
+                  ? 'bg-gray-600 cursor-not-allowed' 
+                  : 'bg-purple-600 hover:bg-purple-700 hover:scale-105'
+              }`}
             >
-              Finalizar Compra
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processando...
+                </>
+              ) : (
+                'Finalizar Compra'
+              )}
             </button>
           </div>
         )}

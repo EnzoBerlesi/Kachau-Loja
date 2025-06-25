@@ -156,7 +156,7 @@ const ListaVendasPage = () => {
   };
 
   const calcularEstatisticas = () => {
-    const vendasPagas = vendasFiltradas.filter(v => v.status === 'pago');
+    const vendasPagas = vendasFiltradas.filter(v => v.status === 'pendente');
     const totalVendido = vendasPagas.reduce((sum, venda) => sum + venda.total, 0);
     const totalItens = vendasFiltradas.reduce((sum, venda) => 
       sum + venda.itens.reduce((itemSum, item) => itemSum + item.quantidade, 0), 0

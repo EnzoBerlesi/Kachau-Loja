@@ -19,7 +19,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children, onLogout }: { children: ReactNode; onLogout?: () => void }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [user, setUser] = useState<User | null>(null);
 
@@ -49,6 +49,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    // Limpa o carrinho ao fazer logout
+    if (onLogout) {
+      onLogout();
+    }
   };
 
   return (
