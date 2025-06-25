@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 
 import "./App.css";
 
@@ -27,6 +28,7 @@ import { VendasPage, ListaVendasPage, DashboardVendas } from "./pages/vendas";
 import OrderConfirmation from "./pages/orders/OrderConfirmation";
 import MyOrders from "./pages/orders/MyOrders";
 import OrderDetails from "./pages/orders/OrderDetails";
+import { loadProductImages } from "./services/imageService";
 
 function AppContent() {
   const { clearCart } = useCart();
@@ -72,6 +74,11 @@ function AppContent() {
 }
 
 function App() {
+  // Carrega o mapeamento de imagens dos produtos na inicialização
+  useEffect(() => {
+    loadProductImages();
+  }, []);
+
   return (
     <Router>
       <NotificationProvider>

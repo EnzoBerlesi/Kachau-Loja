@@ -4,7 +4,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
-import { getProductImage } from '../services/imageService';
+import { getProductImage, getKitImages, isKit } from '../services/imageService';
 import { useCart } from '../context/useCart';
 import type { Product } from '../services/productService';
 import type { Category } from '../services/categoryService';
@@ -167,11 +167,34 @@ function Products() {
                   className="group bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300 transform hover:scale-[1.02]"
                 >
                   <Link to={`/product/${product.id}`}>
-                    <img
-                      src={getProductImage(product.id, product.categoryId)}
-                      alt={product.name}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    {/* Verificar se é kit para mostrar múltiplas imagens */}
+                    {isKit(product.name) ? (
+                      <div className="relative h-48 overflow-hidden">
+                        {getKitImages(product.name).slice(0, 2).map((image, index) => (
+                          <img
+                            key={index}
+                            src={image}
+                            alt={`${product.name} - Item ${index + 1}`}
+                            className={`absolute w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
+                              index === 0 ? 'z-10 clip-path-half-left' : 'z-5 clip-path-half-right'
+                            }`}
+                            style={{
+                              clipPath: index === 0 ? 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' : 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)'
+                            }}
+                          />
+                        ))}
+                        {/* Badge indicando que é um kit */}
+                        <div className="absolute top-2 left-2 bg-purple-600/90 text-white text-xs px-2 py-1 rounded-full z-20">
+                          Kit
+                        </div>
+                      </div>
+                    ) : (
+                      <img
+                        src={getProductImage(product.id)}
+                        alt={product.name}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
                     <div className="p-4">
                       <h3 className="font-semibold text-purple-100 group-hover:text-purple-200 transition-colors text-lg">
                         {product.name}

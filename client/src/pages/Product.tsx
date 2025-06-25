@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { productService, type Product as ApiProduct } from '../services/productService';
+import { getProductImage, getKitImages, isKit } from '../services/imageService';
 import { useCart } from '../context/useCart';
 import {
   ShoppingCart,
@@ -70,12 +71,7 @@ const Product = () => {
         const productData: Product = {
           ...apiProduct,
           originalPrice: undefined, // Pode adicionar lógica para preço original se necessário
-          images: [
-            '/assets/gamer/MouseGamer.jpg', // Imagem padrão baseada no produto
-            '/assets/gamer/Tecladorazergamer.jpg',
-            '/assets/gamer/CAdeiraGamer.jpg',
-            '/assets/gamer/fonehxgamer.jpg'
-          ],
+          images: isKit(apiProduct.name) ? getKitImages(apiProduct.name) : [getProductImage(apiProduct.id)],
           rating: 4.5, // Valor padrão - pode ser implementado no backend
           reviewCount: 89, // Valor padrão - pode ser implementado no backend
           inStock: apiProduct.stock > 0,

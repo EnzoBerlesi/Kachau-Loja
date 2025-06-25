@@ -119,7 +119,7 @@ function CategoryPage() {
                   className="group bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300 transform hover:scale-[1.02] block"
                 >
                   <img
-                    src={getProductImage(product.id, product.categoryId)}
+                    src={getProductImage(product.id)}
                     alt={product.name}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
