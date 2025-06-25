@@ -1,6 +1,7 @@
 import { Download, Eye } from "lucide-react";
 import { type Order } from "../../services/orderService";
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface OrdersSectionProps {
   orders: Order[];
@@ -18,10 +19,10 @@ const OrdersSection: React.FC<OrdersSectionProps> = ({
   <div className="space-y-6">
     <div className="flex justify-between items-center">
       <h2 className="text-2xl font-bold text-white">Gerenciamento de Pedidos</h2>
-      <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
+      <Link to="/reports" className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-[1.02]">
         <Download size={20} />
         <span>Exportar Relatório</span>
-      </button>
+      </Link>
     </div>
     {error && (
       <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
