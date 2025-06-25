@@ -46,7 +46,7 @@ function Carrinho() {
       }
 
       const response = await axios.post(
-        "http://localhost:3000/checkout",
+        "https://kachau-loja.onrender.com/checkout",
         {
           items: cart.map(item => ({
             productId: item.productId,

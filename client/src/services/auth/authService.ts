@@ -1,8 +1,8 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:3000/auth';
+const API_URL = 'https://kachau-loja.onrender.com/auth';
 
 export async function login(email: string, password: string) {
-  const response = await fetch('http://localhost:3000/auth/login', {
+  const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
