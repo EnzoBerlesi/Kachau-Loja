@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CircleUserRound, House, ShoppingCart, LogOut, Settings } from 'lucide-react';
+import { CircleUserRound, House, ShoppingCart, LogOut, Settings, Receipt } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 function Header() {
@@ -11,9 +11,11 @@ return (
       <div className="max-w-6xl mx-auto flex items-center">
         {/* Logo */}
         <div className="flex-1">
-          <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 cursor-pointer select-none">
-            Kachau Loja
-          </h1>
+          <Link to="/" className="flex items-center space-x-2">
+            <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 cursor-pointer select-none">
+              Kachau Loja
+            </h1>
+          </Link>
         </div>
 
         {/* Search bar centralizada */}
@@ -37,6 +39,9 @@ return (
               </Link>
               <Link to="/carrinho" title="Carrinho" className="hover:text-pink-400 transition">
                 <ShoppingCart />
+              </Link>
+              <Link to="/vendas" title="Sistema de Vendas" className="hover:text-pink-400 transition">
+                <Receipt />
               </Link>
               <Link to="/admin" title="Administração" className="hover:text-pink-400 transition">
                 <Settings />

@@ -14,9 +14,11 @@ import Register from "./pages/auth/Register";
 import Profile from "./pages/user/Profile";
 import Admin from "./pages/admin/Admin";
 import Product from "./pages/Product";
+import VendasAdmin from "./pages/vendas/VendasAdmin";
 import { PrivateRoutes as PrivateRoute } from "./components/ui";
 import { AdminRoutes as AdminRoute } from "./components/admin";
 import { CartProvider } from "./context/CartContext";
+import { VendasPage, ListaVendasPage, DashboardVendas } from "./pages/vendas";
 
 function App() {
   return (
@@ -40,10 +42,14 @@ function App() {
               <Route element={<PrivateRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/carrinho" element={<Carrinho />} />
+                <Route path="/vendas" element={<DashboardVendas />} />
+                <Route path="/vendas/nova" element={<VendasPage />} />
+                <Route path="/vendas/historico" element={<ListaVendasPage />} />
               </Route>
 
               <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/vendas" element={<VendasAdmin />} />
               </Route>
             </Routes>
           </div>
