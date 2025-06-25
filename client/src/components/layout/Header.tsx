@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CircleUserRound, House, ShoppingCart, LogOut, Settings, Receipt } from 'lucide-react';
+import { CircleUserRound, House, ShoppingCart, LogOut, Settings, Receipt, Package } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/useCart';
 
@@ -49,6 +49,9 @@ return (
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
+              </Link>
+               <Link to="/orders" title="Meus Pedidos" className="hover:text-pink-400 transition">
+                <Package />
               </Link>
               <Link to="/vendas" title="Sistema de Vendas" className="hover:text-pink-400 transition">
                 <Receipt />
