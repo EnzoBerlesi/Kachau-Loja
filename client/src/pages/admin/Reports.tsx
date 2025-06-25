@@ -237,7 +237,7 @@ function Reports() {
                     <option value="">Todos</option>
                     <option value="ecommerce">E-commerce</option>
                     <option value="vendedor">Vendedor</option>
-                    <option value="telefone">Telefone</option>
+                    <option value="Marketplace">Marketplace</option>
                     <option value="presencial">Presencial</option>
                   </select>
                 </div>

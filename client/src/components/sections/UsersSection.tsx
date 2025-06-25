@@ -1,6 +1,7 @@
 import { Download, Edit, Trash2, Search, Filter } from "lucide-react";
 import { type User } from "../../services/userService";
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface UsersSectionProps {
   users: User[];
@@ -19,10 +20,10 @@ const UsersSection: React.FC<UsersSectionProps> = ({
     <div className="flex justify-between items-center">
       <h2 className="text-2xl font-bold text-white">Gestão de Usuários</h2>
       <div className="flex space-x-2">
-        <button className="bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600 hover:border-purple-400 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200">
+        <Link to="/reports" className="bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600 hover:border-purple-400 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200">
           <Download size={20} />
           <span>Exportar</span>
-        </button>
+        </Link>
       </div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">

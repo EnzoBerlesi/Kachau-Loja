@@ -1,5 +1,7 @@
 import axios from 'axios';
 const API_URL = 'https://kachau-loja.onrender.com/auth';
+//const API_URL = 'http://localhost:3000/auth';
+
 
 export async function login(email: string, password: string) {
   const response = await fetch(`${API_URL}/login`, {
