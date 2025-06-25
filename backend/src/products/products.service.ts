@@ -15,14 +15,38 @@ export class ProductsService {
     return await this.prisma.product.findMany({ include: { category: true } });
   }
 
+  async findByCategory(categoryId: string) {
+    return await this.prisma.product.findMany({
+      where: { categoryId },
+      include: { category: true },
+    });
+  }
+
+  async findByCategoryName(categoryName: string) {
+    return await this.prisma.product.findMany({
+      where: {
+        category: {
+          name: {
+            contains: categoryName,
+            mode: 'insensitive', // busca case-insensitive
+          },
+        },
+      },
+      include: { category: true },
+    });
+  }
+
   async findOne(id: string) {
-    const product = await this.prisma.product.findUnique({ where: { id }, include: { category: true } });
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: { category: true },
+    });
     if (!product) throw new NotFoundException('Produto não encontrado');
     return product;
   }
 
   async update(id: string, dto: UpdateProductDto) {
-    await this.findOne(id); 
+    await this.findOne(id);
     return await this.prisma.product.update({ where: { id }, data: dto });
   }
 

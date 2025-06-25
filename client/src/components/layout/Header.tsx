@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 import { CircleUserRound, House, ShoppingCart, LogOut, Settings, Receipt } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/useCart';
 
 function Header() {
   const { token, logout } = useAuth();
+  const { cart } = useCart();
+
+  // Calcular total de itens no carrinho
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
 return (
   <>
@@ -37,8 +42,13 @@ return (
               <Link to="/profile" title="Perfil" className="hover:text-pink-400 transition">
                 <CircleUserRound />
               </Link>
-              <Link to="/carrinho" title="Carrinho" className="hover:text-pink-400 transition">
+              <Link to="/carrinho" title="Carrinho" className="hover:text-pink-400 transition relative">
                 <ShoppingCart />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
               </Link>
               <Link to="/vendas" title="Sistema de Vendas" className="hover:text-pink-400 transition">
                 <Receipt />
@@ -65,20 +75,23 @@ return (
     </nav>
 
       <div className="bg-gradient-to-r from-purple-700 to-purple-900 flex justify-center space-x-8 mt-18 py-3 text-sm text-gray-300 select-none border-t border-purple-600">
-        <Link to="/gamer" className="hover:text-pink-400 transition">
+        <Link to="/products?categoryName=Gamer" className="hover:text-pink-400 transition">
           | Gamer |
         </Link>
-        <Link to="/escritorio" className="hover:text-pink-400 transition">
+        <Link to="/products?categoryName=Escritório" className="hover:text-pink-400 transition">
           | Escritório |
         </Link>
-        <Link to="/perifericos" className="hover:text-pink-400 transition">
+        <Link to="/products?categoryName=Periféricos" className="hover:text-pink-400 transition">
           | Periféricos |
         </Link>
-        <Link to="/notebooks" className="hover:text-pink-400 transition">
+        <Link to="/products?categoryName=Notebooks" className="hover:text-pink-400 transition">
           | Notebooks |
         </Link>
-        <Link to="/hardware" className="hover:text-pink-400 transition">
+        <Link to="/products?categoryName=Hardware" className="hover:text-pink-400 transition">
           | Hardware |
+        </Link>
+        <Link to="/products" className="hover:text-pink-400 transition">
+          | Todos |
         </Link>
       </div>
     </>

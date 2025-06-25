@@ -39,21 +39,26 @@ function CategoryPage() {
       try {
         setLoading(true);
         
-        // Primeiro tentamos buscar a categoria pelo nome para obter o ID
-        const categories = await categoryService.getAllCategories();
-        const matchedCategory = categories.find(
-          cat => cat.name.toLowerCase() === categoryInfo.name.toLowerCase()
-        );
-          if (matchedCategory) {
-          setActiveCategory(matchedCategory);
-          
-          // Buscamos os produtos dessa categoria
-          const categoryProducts = await productService.getProductsByCategory(matchedCategory.id);
-          setProducts(categoryProducts);
-        } else {
-          // Se não encontrou categoria correspondente, mostra mensagem
-          setError(`Categoria ${categoryInfo.name} não encontrada`);
+        // Buscar produtos diretamente pelo nome da categoria usando a nova API
+        const categoryProducts = await productService.getProductsByCategoryName(categoryInfo.name);
+        setProducts(categoryProducts);
+
+        // Se encontrou produtos, buscar informações da categoria para mostrar detalhes
+        if (categoryProducts.length > 0) {
+          try {
+            const categories = await categoryService.getAllCategories();
+            const matchedCategory = categories.find(
+              cat => cat.name.toLowerCase() === categoryInfo.name.toLowerCase()
+            );
+            if (matchedCategory) {
+              setActiveCategory(matchedCategory);
+            }
+          } catch (categoryError) {
+            console.log('Erro ao buscar categoria:', categoryError);
+            // Não bloqueia se não conseguir buscar a categoria
+          }
         }
+        
       } catch (err) {
         console.error(`Erro ao buscar produtos da categoria ${slug}:`, err);
         setError(`Erro ao carregar produtos da categoria ${categoryInfo.name}.`);

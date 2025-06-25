@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useState, type ReactNode } from 'react';
+import { useNotification } from './useNotification';
 
 export interface CartItem {
   productId: string;
@@ -17,19 +18,28 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+export { CartContext };
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const { showCartNotification } = useNotification();
 
   function addToCart(item: CartItem) {
     setCart((prev) => {
       const existing = prev.find(p => p.productId === item.productId);
       if (existing) {
+        // Produto já existe - atualiza quantidade
         return prev.map(p =>
           p.productId === item.productId ? { ...p, quantity: p.quantity + item.quantity } : p
         );
       }
+      
+      // Produto novo - adiciona ao carrinho
       return [...prev, item];
     });
+
+    // Mostra notificação após atualizar o estado (apenas uma vez)
+    showCartNotification(item.name, item.quantity);
   }
 
   function removeFromCart(productId: string) {
@@ -45,10 +55,4 @@ export function CartProvider({ children }: { children: ReactNode }) {
       {children}
     </CartContext.Provider>
   );
-}
-
-export function useCart() {
-  const context = useContext(CartContext);
-  if (!context) throw new Error("useCart deve estar dentro do CartProvider");
-  return context;
 }

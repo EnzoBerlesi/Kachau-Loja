@@ -43,6 +43,12 @@ export const productService = {
     return response.data;
   },
 
+  // GET /products?categoryName=:name - Buscar produtos por nome da categoria
+  async getProductsByCategoryName(categoryName: string): Promise<Product[]> {
+    const response = await api.get(`/products?categoryName=${categoryName}`);
+    return response.data;
+  },
+
   // POST /products - Criar produto (ADMIN)
   async createProduct(data: CreateProductData): Promise<Product> {
     const response = await api.post('/products', data);

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { productService, type Product as ApiProduct } from '../services/productService';
+import { useCart } from '../context/useCart';
 import {
   ShoppingCart,
   Heart,
@@ -20,17 +22,12 @@ import {
   MessageCircle
 } from 'lucide-react';
 
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
+interface Product extends ApiProduct {
   originalPrice?: number;
   images: string[];
   rating: number;
   reviewCount: number;
   inStock: boolean;
-  category: string;
   brand: string;
   specifications: { [key: string]: string };
 }
@@ -48,6 +45,7 @@ interface Review {
 const Product = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -58,72 +56,108 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setProduct({
-        id: id || '1',
-        name: 'Teclado Mecânico Gamer RGB Pro',
-        description: 'Teclado mecânico de alta performance com switches Cherry MX Blue, iluminação RGB personalizável e design ergonômico para gamers profissionais.',
-        price: 349.99,
-        originalPrice: 449.99,
-        images: [
-          '/assets/gamer/Tecladorazergamer.jpg',
-          '/assets/gamer/MouseGamer.jpg',
-          '/assets/gamer/CAdeiraGamer.jpg',
-          '/assets/gamer/fonehxgamer.jpg'
-        ],
-        rating: 4.8,
-        reviewCount: 127,
-        inStock: true,
-        category: 'Periféricos',
-        brand: 'Razer',
-        specifications: {
-          'Tipo de Switch': 'Cherry MX Blue',
-          'Layout': 'ABNT2',
-          'Iluminação': 'RGB 16.7M cores',
-          'Conectividade': 'USB-C',
-          'Material': 'Alumínio premium',
-          'Garantia': '2 anos'
-        }
-      });
+    const fetchProduct = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
 
-      setReviews([
-        {
-          id: '1',
-          userName: 'João Silva',
-          rating: 5,
-          comment: 'Excelente teclado! A qualidade dos switches é impressionante e a iluminação RGB é linda.',
-          date: '2024-12-15',
-          helpful: 23
-        },
-        {
-          id: '2',
-          userName: 'Maria Santos',
-          rating: 4,
-          comment: 'Muito bom para jogos, mas um pouco barulhento para usar em escritório.',
-          date: '2024-12-10',
-          helpful: 15
-        },
-        {
-          id: '3',
-          userName: 'Pedro Costa',
-          rating: 5,
-          comment: 'Melhor compra que fiz! A resposta dos switches é perfeita para FPS.',
-          date: '2024-12-08',
-          helpful: 31
-        }
-      ]);
+      try {
+        setLoading(true);
+        const apiProduct = await productService.getProductById(id);
+        
+        // Mapear os dados da API para o formato do componente
+        const productData: Product = {
+          ...apiProduct,
+          originalPrice: undefined, // Pode adicionar lógica para preço original se necessário
+          images: [
+            '/assets/gamer/MouseGamer.jpg', // Imagem padrão baseada no produto
+            '/assets/gamer/Tecladorazergamer.jpg',
+            '/assets/gamer/CAdeiraGamer.jpg',
+            '/assets/gamer/fonehxgamer.jpg'
+          ],
+          rating: 4.5, // Valor padrão - pode ser implementado no backend
+          reviewCount: 89, // Valor padrão - pode ser implementado no backend
+          inStock: apiProduct.stock > 0,
+          brand: 'Logitech', // Pode ser extraído do nome ou adicionado no backend
+          specifications: {
+            'DPI': '5000',
+            'Conectividade': 'USB',
+            'Marca': 'Logitech',
+            'Garantia': '2 anos',
+            'Compatibilidade': 'Windows, Mac, Linux'
+          }
+        };
 
-      setLoading(false);
-    }, 1000);
+        setProduct(productData);
+
+        // Reviews mockados - pode ser implementado no backend
+        setReviews([
+          {
+            id: '1',
+            userName: 'João Silva',
+            rating: 5,
+            comment: 'Excelente mouse! Muito preciso e confortável para jogos.',
+            date: '2024-12-15',
+            helpful: 23
+          },
+          {
+            id: '2',
+            userName: 'Maria Santos',
+            rating: 4,
+            comment: 'Boa qualidade, mas poderia ter mais botões programáveis.',
+            date: '2024-12-10',
+            helpful: 15
+          },
+          {
+            id: '3',
+            userName: 'Pedro Costa',
+            rating: 5,
+            comment: 'Melhor mouse que já usei! Vale cada centavo.',
+            date: '2024-12-08',
+            helpful: 31
+          }
+        ]);
+
+      } catch (error) {
+        console.error('Erro ao buscar produto:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const handleAddToCart = () => {
-    return ""
+    if (!product) return;
+    
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      categoryId: product.categoryId,
+      quantity: quantity,
+    });
   };
 
   const handleBuyNow = () => {
-    console.log(`Comprando ${quantity} unidades do produto ${product?.id}`);
-    navigate('/checkout');
+    if (!product) return;
+    
+    // Adicionar produto ao carrinho antes de redirecionar
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      categoryId: product.categoryId,
+      quantity: quantity,
+    });
+    
+    console.log(`${quantity} unidade(s) de ${product.name} adicionada(s) ao carrinho! Redirecionando para checkout...`);
+    
+    // Redirecionar para o carrinho
+    navigate('/carrinho');
   };
 
   const StarRating = ({ rating, size = 16 }: { rating: number; size?: number }) => {
@@ -174,9 +208,11 @@ const Product = () => {
     );
   }
 
-  return (    <>
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="min-h-screen pt-12" style={{ backgroundColor: '#182337' }}>
+
+      <div className="flex-1 pt-12" style={{ backgroundColor: '#182337' }}>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb */}
           <nav className="mb-8">
@@ -247,6 +283,9 @@ const Product = () => {
                     <span className="text-slate-300">({product.reviewCount} avaliações)</span>
                   </div>
                   <span className="text-purple-400 font-medium">{product.brand}</span>
+                  {product.category && (
+                    <span className="text-slate-400">• {product.category.name}</span>
+                  )}
                 </div>
               </div>
 
@@ -494,9 +533,10 @@ const Product = () => {
           </div>
         </div>
 
-        <Footer />
       </div>
-    </>
+      
+      <Footer />
+    </div>
   );
 };
 

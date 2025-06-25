@@ -7,7 +7,7 @@ import Footer from "../components/layout/Footer";
 import { productService } from "../services/productService";
 import type { Product } from "../services/productService";
 import { getProductImage } from "../services/imageService";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 
 // COMPONENTE PRINCIPAL (HOME)
 function Home() {
@@ -72,9 +72,9 @@ function Home() {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="w-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 pt-12 pb-25 min-h-screen">
+      <div className="flex-1 w-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 pt-12 pb-8">
         {/* Carrossel no topo */}
         <Carousel />
 
@@ -196,8 +196,7 @@ function Home() {
         </div>
       </div>
       <Footer />
-
-    </>
+    </div>
   );
 }
 

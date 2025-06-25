@@ -5,3 +5,5 @@ export { default as Register } from './auth/Register';
 export { default as Profile } from './user/Profile';
 export { default as Carrinho } from './shop/Carrinho';
 export { default as Gamer } from './shop/Gamer';
+export { default as Products } from './Products';
+export { default as Product } from './Product';

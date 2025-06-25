@@ -14,23 +14,27 @@ import Register from "./pages/auth/Register";
 import Profile from "./pages/user/Profile";
 import Admin from "./pages/admin/Admin";
 import Product from "./pages/Product";
+import Products from "./pages/Products";
 import VendasAdmin from "./pages/vendas/VendasAdmin";
 import { PrivateRoutes as PrivateRoute } from "./components/ui";
 import { AdminRoutes as AdminRoute } from "./components/admin";
 import { CartProvider } from "./context/CartContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import { VendasPage, ListaVendasPage, DashboardVendas } from "./pages/vendas";
 
 function App() {
   return (
     <Router>
-      <CartProvider>
-        <div className="app">
-          <div className="content">
+      <NotificationProvider>
+        <CartProvider>
+          <div className="app">
+            <div className="content">
             {" "}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/products" element={<Products />} />
               <Route path="/gamer" element={<Gamer />} />
               <Route path="/escritorio" element={<Escritorio />} />
               <Route path="/notebooks" element={<Notebooks />} />
@@ -55,6 +59,7 @@ function App() {
           </div>
         </div>
       </CartProvider>
+      </NotificationProvider>
     </Router>
   );
 }

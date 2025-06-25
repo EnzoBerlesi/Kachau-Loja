@@ -1,5 +1,13 @@
 import {
-  Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -13,7 +21,16 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll() {
+  findAll(
+    @Query('categoryId') categoryId?: string,
+    @Query('categoryName') categoryName?: string,
+  ) {
+    if (categoryId) {
+      return this.productsService.findByCategory(categoryId);
+    }
+    if (categoryName) {
+      return this.productsService.findByCategoryName(categoryName);
+    }
     return this.productsService.findAll();
   }
 
@@ -25,7 +42,6 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
-  
   create(@Body() dto: CreateProductDto) {
     return this.productsService.create(dto);
   }
